@@ -1,7 +1,6 @@
 import { SKIP_ROUTE_HOOKS } from "@/const/skipRouteHooks";
 import { Hook } from "@/hooks/types";
 import { User } from "@prisma/client";
-import { onRequestAsyncHookHandler } from "fastify";
 
 declare module "fastify" {
   interface FastifyRequest {
@@ -13,6 +12,9 @@ declare module "fastify" {
 export const authHook: Hook<"onRequest"> = {
   handler: async (request, reply) => {
     const { url } = request;
+
+    // TODO debug
+    await new Promise((r) => setTimeout(r, 700));
 
     if (url && /^\/swagger\/.*/.test(url)) {
       return;

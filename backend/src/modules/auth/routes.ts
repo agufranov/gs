@@ -1,12 +1,13 @@
-import { AUTH_COOKIE_NAME } from "@/modules/auth/const";
 import { SPECIAL_ROLES } from "@/const/specialRoles";
 import { formatUsernameHook } from "@/hooks/formatUsername";
+import { AUTH_COOKIE_NAME } from "@/modules/auth/const";
 import bcrypt from "bcrypt";
 import { FastifyInstance } from "fastify";
+import { SignInRequest } from "./types";
 
 export default function authRoutes(server: FastifyInstance) {
   // TODOODOT (wip) create schema with something like zod, and export to frontend somehow
-  server.post(
+  server.post<{ Body: SignInRequest; Reply: { debugSessionId: string } }>(
     "/signIn",
     {
       [formatUsernameHook.stage]: formatUsernameHook.handler,
@@ -59,37 +60,6 @@ export default function authRoutes(server: FastifyInstance) {
       }
     }
   );
-
-  // server.post<{ Body: UserCredentialsRequest; Reply: ErrorResponse }>(
-  //   '/signUp',
-  //   { [formatUsernameHook.stage]: formatUsernameHook.handler },
-  //   async (request, reply) => {
-  //     const { prisma } = server
-  //     const { username, password } = request.body
-
-  //     const passwordHash = await bcrypt.hash(password, 5)
-
-  //     try {
-  //       await prisma.user.create({
-  //         data: {
-  //           username: username.trim().toLowerCase(),
-  //           passwordHash,
-  //           role: SPECIAL_ROLES[username],
-  //         },
-  //       })
-
-  //       return
-  //     } catch (err) {
-  //       if (err instanceof Prisma.PrismaClientKnownRequestError) {
-  //         if (err.code === 'P2002') {
-  //           reply.code(400)
-  //           return { error: ErrorCodes.UserAlreadyExists }
-  //         }
-  //       }
-  //       throw err
-  //     }
-  //   },
-  // )
 
   server.post("/signOut", async (request, reply) => {
     // reply.clearCookie doesn't work!

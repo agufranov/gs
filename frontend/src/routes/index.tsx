@@ -12,12 +12,18 @@ function App() {
   return (
     <div>
       {!profile.isLoading && !profile.data && <Navigate to="/signIn" />}
-      {profile.data && (
+      {!profile.isLoading && profile.data && (
         <>
           <div>{JSON.stringify(profile.data)}</div>
-          <button onClick={() => signOut.mutateAsync()}>Sign out</button>
+          <button
+            onClick={() => signOut.mutateAsync()}
+            disabled={signOut.isPending}
+          >
+            Sign out
+          </button>
         </>
       )}
+      {profile.isLoading && 'Loading...'}
     </div>
   )
 }

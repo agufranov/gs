@@ -1,23 +1,15 @@
 import { client } from '@/client'
+import type { SignInRequest, UserResponse } from '@backend-types'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useSignIn = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
+  return useMutation<never, never, SignInRequest>({
     mutationKey: ['signIn'],
-    mutationFn: ({
-      username,
-      password,
-    }: {
-      username: string
-      password: string
-    }) =>
-      client
-        .post('/auth/signIn', { username, password })
-        .then(({ data }) => data),
+    mutationFn: ({ username, password }) =>
+      client.post('/auth/signIn', { username, password }),
     onSuccess: () => {
-      console.log('signed in')
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
   })
@@ -28,15 +20,15 @@ export const useSignOut = () => {
 
   return useMutation({
     mutationKey: ['signOut'],
-    mutationFn: () => client.post('/auth/signOut').then(({ data }) => data),
+    mutationFn: () => client.post('/auth/signOut'),
     onSuccess: () => queryClient.setQueryData(['profile'], null),
   })
 }
 
 export const useProfile = () =>
-  useQuery({
+  useQuery<UserResponse>({
     queryKey: ['profile'],
-    queryFn: () => client.get('/auth/profile').then(({ data }) => data),
+    queryFn: () => client.get('/auth/profile'),
     retry: false,
     refetchOnMount: false,
   })
