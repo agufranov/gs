@@ -1,0 +1,25 @@
+// Prisma schema for gs-backend
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+enum Role {
+    ADMIN
+    SURVIVOR
+    NIKITA
+}
+
+model User {
+    id           Int    @id @default(autoincrement())
+    username     String @unique
+    passwordHash String
+    role         Role   @default(SURVIVOR)
+
+    @@map("Users")
+}

@@ -7,7 +7,11 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:studio": "prisma studio",
+    "prisma:deploy": "prisma migrate deploy"
   },
   "keywords": [
     "fastify",
@@ -22,12 +26,14 @@
     "@fastify/cors": "^8.4.0",
     "@fastify/helmet": "^11.1.1",
     "@fastify/swagger": "^8.12.0",
-    "@fastify/swagger-ui": "^2.0.0"
+    "@fastify/swagger-ui": "^2.0.0",
+    "@prisma/client": "^5.19.1"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
     "tsx": "^4.6.0",
     "typescript": "^5.3.0",
-    "pino-pretty": "^10.3.1"
+    "pino-pretty": "^10.3.1",
+    "prisma": "^5.19.1"
   }
 }
