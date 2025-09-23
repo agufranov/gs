@@ -1,4 +1,4 @@
-import { AUTH_COOKIE_NAME } from "@/const/auth";
+import { AUTH_COOKIE_NAME } from "@/modules/auth/const";
 import { SPECIAL_ROLES } from "@/const/specialRoles";
 import { formatUsernameHook } from "@/hooks/formatUsername";
 import bcrypt from "bcrypt";

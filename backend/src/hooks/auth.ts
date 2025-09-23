@@ -1,44 +1,43 @@
-import { User } from '@prisma/client'
-import { onRequestAsyncHookHandler } from 'fastify'
-import { SKIP_ROUTE_HOOKS } from '@/const/skipRouteHooks'
-import { Hook } from '@/hooks/types'
+import { SKIP_ROUTE_HOOKS } from "@/const/skipRouteHooks";
+import { Hook } from "@/hooks/types";
+import { User } from "@prisma/client";
+import { onRequestAsyncHookHandler } from "fastify";
 
-declare module 'fastify' {
+declare module "fastify" {
   interface FastifyRequest {
-    user?: Pick<User, 'id' | 'username'>
+    user?: Pick<User, "id" | "username">;
   }
 }
 
 // TODO we need to exclude swagger, so add this hook only for specific subset?
-export const authHook: Hook<'onRequest'> = {
+export const authHook: Hook<"onRequest"> = {
   handler: async (request, reply) => {
-    const { url } = request.routeOptions
-    console.log(url)
+    const { url } = request;
+    console.log("UUURL", url);
 
-    // TODO костыль
     if (url && /^\/swagger\/.*/.test(url)) {
-      console.log('SWAG')
-      return
+      console.log("SWAG");
+      return;
     }
 
     if (url && SKIP_ROUTE_HOOKS.auth.includes(url)) {
-      return
+      return;
     }
-    const { sessionId } = request.cookies
+    const { sessionId } = request.cookies;
     if (!sessionId) {
-      console.log('UNAUTH', request.cookies)
-      reply.code(401)
-      throw { error: 'UNAUTHORIZED' }
+      console.log("UNAUTH", request.cookies);
+      reply.code(401);
+      throw { error: "UNAUTHORIZED" };
     }
     try {
       const session = await request.server.prisma.authSession.findUnique({
         where: { data: sessionId },
         select: { user: { select: { id: true, username: true, role: true } } },
-      })
-      request.user = session?.user
+      });
+      request.user = session?.user;
     } catch (err) {
-      throw err
+      throw err;
     }
   },
-  stage: 'onRequest',
-}
+  stage: "onRequest",
+};
