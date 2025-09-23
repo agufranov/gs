@@ -16,10 +16,20 @@ enum Role {
 }
 
 model User {
-    id           Int    @id @default(autoincrement())
-    username     String @unique
+    id           Int           @id @default(autoincrement())
+    username     String        @unique
     passwordHash String
-    role         Role   @default(SURVIVOR)
+    role         Role          @default(SURVIVOR)
+    authSessions AuthSession[]
 
     @@map("Users")
+}
+
+model AuthSession {
+  id     Int    @id @default(autoincrement())
+  data   String @unique @default(uuid())
+  userId Int
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("AuthSessions")
 }

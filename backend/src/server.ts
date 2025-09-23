@@ -1,10 +1,12 @@
-import cors from "@fastify/cors";
 import helmet from "@fastify/helmet";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import Fastify from "fastify";
-
-import userRoutes from "./routes/users";
+import { authHook } from "./hooks/auth";
+import authRoutes from "./modules/auth/routes";
+import cookiePlugin from "./plugins/cookie";
+import prismaPlugin from "./plugins/prisma";
+import sensiblePlugin from "./plugins/sensible";
 
 const fastify = Fastify({
   logger: {
@@ -25,10 +27,11 @@ fastify.register(helmet, {
   contentSecurityPolicy: false,
 });
 
-fastify.register(cors, {
-  origin: true,
-  credentials: true,
-});
+fastify.register(sensiblePlugin);
+fastify.register(prismaPlugin);
+fastify.register(cookiePlugin);
+
+fastify.addHook(authHook.stage, authHook.handler);
 
 fastify.register(swagger, {
   swagger: {
@@ -63,7 +66,7 @@ fastify.register(swaggerUi, {
 });
 
 // Register routes
-fastify.register(userRoutes, { prefix: "/users" });
+fastify.register(authRoutes, { prefix: "/auth" });
 
 // Health check endpoint
 fastify.get("/health", async (request, reply) => {
