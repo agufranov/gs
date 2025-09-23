@@ -1,10 +1,10 @@
 import { SKIP_ROUTE_HOOKS } from "@/const/skipRouteHooks";
 import { Hook } from "@/hooks/types";
-import { User } from "@prisma/client";
+import { UserResponse } from "@/types";
 
 declare module "fastify" {
   interface FastifyRequest {
-    user?: Pick<User, "id" | "username">;
+    user?: UserResponse;
   }
 }
 

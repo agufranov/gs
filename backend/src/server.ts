@@ -1,9 +1,10 @@
 import helmet from "@fastify/helmet";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-import Fastify from "fastify";
+import Fastify, { FastifyInstance } from "fastify";
 import { authHook } from "./hooks/auth";
 import authRoutes from "./modules/auth/routes";
+import roundRoutes from "./modules/rounds/routes";
 import cookiePlugin from "./plugins/cookie";
 import prismaPlugin from "./plugins/prisma";
 import sensiblePlugin from "./plugins/sensible";
@@ -65,8 +66,15 @@ fastify.register(swaggerUi, {
   transformStaticCSP: (header: any) => header,
 });
 
+function testRoutes(server: FastifyInstance) {
+  server.get("/", (request, reply) => reply.send({ test: 42 }));
+  server.post("/", (request, reply) => reply.send({ test: 33 }));
+}
+
 // Register routes
 fastify.register(authRoutes, { prefix: "/auth" });
+fastify.register(roundRoutes, { prefix: "/rounds" });
+fastify.register(testRoutes, { prefix: "/test" });
 
 // Health check endpoint
 fastify.get("/health", async (request, reply) => {

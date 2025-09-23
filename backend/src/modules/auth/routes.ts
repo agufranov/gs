@@ -3,11 +3,14 @@ import { formatUsernameHook } from "@/hooks/formatUsername";
 import { AUTH_COOKIE_NAME } from "@/modules/auth/const";
 import bcrypt from "bcrypt";
 import { FastifyInstance } from "fastify";
-import { SignInRequest } from "./types";
+import { ErrorResponse } from "../rounds/types";
+import { SignInRequest, UserResponse } from "./types";
 
 export default function authRoutes(server: FastifyInstance) {
-  // TODOODOT (wip) create schema with something like zod, and export to frontend somehow
-  server.post<{ Body: SignInRequest; Reply: { debugSessionId: string } }>(
+  server.post<{
+    Body: SignInRequest;
+    Reply: { debugSessionId: string } | ErrorResponse;
+  }>(
     "/signIn",
     {
       [formatUsernameHook.stage]: formatUsernameHook.handler,
@@ -26,8 +29,6 @@ export default function authRoutes(server: FastifyInstance) {
         });
 
         if (!user) {
-          // return reply.code(404).send({ error: "Wrong password" }); // TODO wrong
-          // TODO register
           user = await prisma.user.create({
             data: {
               username,
@@ -38,6 +39,7 @@ export default function authRoutes(server: FastifyInstance) {
         }
 
         if (!(await bcrypt.compare(password, user.passwordHash))) {
+          // TODO fix type error
           return reply.code(401).send({ error: "Wrong password" });
         }
 
@@ -63,10 +65,14 @@ export default function authRoutes(server: FastifyInstance) {
 
   server.post("/signOut", async (request, reply) => {
     // reply.clearCookie doesn't work!
+    reply.clearCookie(AUTH_COOKIE_NAME);
     reply.setCookie(AUTH_COOKIE_NAME, "").send({});
   });
 
-  server.get("/profile", async (request, reply) => {
-    return { user: request.user };
-  });
+  server.get<{ Reply: UserResponse | undefined }>(
+    "/profile",
+    async (request, reply) => {
+      return request.user;
+    }
+  );
 }

@@ -1,4 +1,4 @@
-import { useProfile, useSignOut } from '@/modules/auth/queries'
+import { useProfile } from '@/modules/auth/queries'
 import { createFileRoute, Navigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/')({
@@ -6,22 +6,22 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
-  const signOut = useSignOut()
   const profile = useProfile()
 
   return (
     <div>
       {!profile.isLoading && !profile.data && <Navigate to="/signIn" />}
       {!profile.isLoading && profile.data && (
-        <>
-          <div>{JSON.stringify(profile.data)}</div>
-          <button
-            onClick={() => signOut.mutateAsync()}
-            disabled={signOut.isPending}
-          >
-            Sign out
-          </button>
-        </>
+        <Navigate to="/rounds" />
+        // <>
+        //   <div>{JSON.stringify(profile.data)}</div>
+        //   <button
+        //     onClick={() => signOut.mutateAsync()}
+        //     disabled={signOut.isPending}
+        //   >
+        //     Sign out
+        //   </button>
+        // </>
       )}
       {profile.isLoading && 'Loading...'}
     </div>

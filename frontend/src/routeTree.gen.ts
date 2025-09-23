@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignInRouteImport } from './routes/signIn'
+import { Route as RoundsRouteImport } from './routes/rounds'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SignInRoute = SignInRouteImport.update({
   id: '/signIn',
   path: '/signIn',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoundsRoute = RoundsRouteImport.update({
+  id: '/rounds',
+  path: '/rounds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/rounds': typeof RoundsRoute
   '/signIn': typeof SignInRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/rounds': typeof RoundsRoute
   '/signIn': typeof SignInRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/rounds': typeof RoundsRoute
   '/signIn': typeof SignInRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/signIn'
+  fullPaths: '/' | '/rounds' | '/signIn'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/signIn'
-  id: '__root__' | '/' | '/signIn'
+  to: '/' | '/rounds' | '/signIn'
+  id: '__root__' | '/' | '/rounds' | '/signIn'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RoundsRoute: typeof RoundsRoute
   SignInRoute: typeof SignInRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/signIn'
       fullPath: '/signIn'
       preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rounds': {
+      id: '/rounds'
+      path: '/rounds'
+      fullPath: '/rounds'
+      preLoaderRoute: typeof RoundsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RoundsRoute: RoundsRoute,
   SignInRoute: SignInRoute,
 }
 export const routeTree = rootRouteImport

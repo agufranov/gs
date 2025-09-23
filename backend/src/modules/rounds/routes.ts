@@ -1,49 +1,53 @@
 import { addSeconds } from "date-fns";
 import { FastifyInstance } from "fastify";
 import { USER_SELECT_FIELDS } from "../auth/const";
+import { ErrorResponse, RoundResponse } from "./types";
 
 // TODO typing
 
 export default async function roundRoutes(server: FastifyInstance) {
-  server.get("/rounds", async (request, reply) => {
-    const { prisma } = server;
+  server.get<{ Reply: RoundResponse[] | ErrorResponse }>(
+    "/",
+    async (request, reply) => {
+      const { prisma } = server;
 
-    try {
-      const rounds = await prisma.round.findMany({
-        include: {
-          players: {
-            include: {
-              user: {
-                select: USER_SELECT_FIELDS,
+      try {
+        const rounds = await prisma.round.findMany({
+          include: {
+            players: {
+              include: {
+                user: {
+                  select: USER_SELECT_FIELDS,
+                },
               },
             },
+            winner: {
+              select: USER_SELECT_FIELDS,
+            },
           },
-          winner: {
-            select: USER_SELECT_FIELDS,
+          orderBy: {
+            startAt: "desc",
           },
-        },
-        orderBy: {
-          startAt: "desc",
-        },
-      });
+        });
 
-      // Transform dates to ISO strings
-      const transformedRounds = rounds.map((round) => ({
-        ...round,
-        startAt: round.startAt.toISOString(),
-        endAt: round.endAt.toISOString(),
-      }));
+        // Transform dates to ISO strings
+        const transformedRounds = rounds.map((round) => ({
+          ...round,
+          startAt: round.startAt.toISOString(),
+          endAt: round.endAt.toISOString(),
+        }));
 
-      return { rounds: transformedRounds };
-    } catch (error) {
-      console.error("Error fetching rounds:", error);
-      reply.code(500);
-      throw error;
+        return transformedRounds;
+      } catch (error) {
+        console.error("Error fetching rounds:", error);
+        reply.code(500);
+        throw error;
+      }
     }
-  });
+  );
 
-  server.get<{ Params: { id: number } }>(
-    "/rounds/:id",
+  server.get<{ Params: { id: number }; Reply: RoundResponse | ErrorResponse }>(
+    ":id",
     async (request, reply) => {
       const { prisma } = server;
       const { id } = request.params;
@@ -86,7 +90,7 @@ export default async function roundRoutes(server: FastifyInstance) {
   );
 
   // POST /rounds - Create new round
-  server.post("/rounds", async (request, reply) => {
+  server.post("/", async (request, reply) => {
     const { prisma } = server;
 
     try {

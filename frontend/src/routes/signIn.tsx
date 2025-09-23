@@ -36,6 +36,7 @@ function SignInRoute() {
           Submit
         </button>
       </form>
+      {JSON.stringify(profile.data)}
       {profile.data && <Navigate to="/" />}
     </div>
   )
