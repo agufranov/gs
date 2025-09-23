@@ -13,10 +13,8 @@ declare module "fastify" {
 export const authHook: Hook<"onRequest"> = {
   handler: async (request, reply) => {
     const { url } = request;
-    console.log("UUURL", url);
 
     if (url && /^\/swagger\/.*/.test(url)) {
-      console.log("SWAG");
       return;
     }
 
@@ -25,7 +23,6 @@ export const authHook: Hook<"onRequest"> = {
     }
     const { sessionId } = request.cookies;
     if (!sessionId) {
-      console.log("UNAUTH", request.cookies);
       reply.code(401);
       throw { error: "UNAUTHORIZED" };
     }

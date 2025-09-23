@@ -16,7 +16,10 @@ export const useSignIn = () => {
       client
         .post('/auth/signIn', { username, password })
         .then(({ data }) => data),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['profile'] }),
+    onSuccess: () => {
+      console.log('signed in')
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
+    },
   })
 }
 
@@ -34,4 +37,6 @@ export const useProfile = () =>
   useQuery({
     queryKey: ['profile'],
     queryFn: () => client.get('/auth/profile').then(({ data }) => data),
+    retry: false,
+    refetchOnMount: false,
   })
