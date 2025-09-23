@@ -21,15 +21,40 @@ model User {
     passwordHash String
     role         Role          @default(SURVIVOR)
     authSessions AuthSession[]
+    rounds       Round[]
+    players      RoundPlayer[]
 
     @@map("Users")
 }
 
 model AuthSession {
-  id     Int    @id @default(autoincrement())
-  data   String @unique @default(uuid())
-  userId Int
-  user   User   @relation(fields: [userId], references: [id])
+    id     Int    @id @default(autoincrement())
+    data   String @unique @default(uuid())
+    userId Int
+    user   User   @relation(fields: [userId], references: [id])
 
-  @@map("AuthSessions")
+    @@map("AuthSessions")
+}
+
+model Round {
+    id       Int           @id @default(autoincrement())
+    startAt  DateTime
+    endAt    DateTime
+    players  RoundPlayer[]
+    winnerId Int?
+    winner   User?         @relation(fields: [winnerId], references: [id])
+
+    @@map("Rounds")
+}
+
+model RoundPlayer {
+    roundId Int
+    round   Round @relation(fields: [roundId], references: [id])
+    userId  Int
+    user    User  @relation(fields: [userId], references: [id])
+    taps    Int   @default(0)
+    score   Int   @default(0)
+
+    @@id([roundId, userId])
+    @@map("RoundPlayers")
 }
