@@ -20,18 +20,8 @@ function SignInRoute() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <input
-          type="text"
-          name="username"
-          value="admin"
-          placeholder="Username"
-        />
-        <input
-          type="password"
-          name="password"
-          value="1"
-          placeholder="Password"
-        />
+        <input type="text" name="username" placeholder="Username" />
+        <input type="password" name="password" placeholder="Password" />
         <button type="submit" disabled={signIn.isPending || profile.isFetching}>
           Submit
         </button>
