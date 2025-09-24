@@ -51,9 +51,10 @@ export default function authRoutes(server: FastifyInstance) {
 
         // TODO... prod mode
         reply.setCookie(AUTH_COOKIE_NAME, session.data, {
-          httpOnly: false,
+          httpOnly: true,
           secure: false,
           sameSite: "lax",
+          path: "/",
         });
 
         return reply.code(200).send({ debugSessionId: session.data });
@@ -64,9 +65,13 @@ export default function authRoutes(server: FastifyInstance) {
   );
 
   server.post("/signOut", async (request, reply) => {
-    // reply.clearCookie doesn't work!
+    const { prisma } = server;
+
     reply.clearCookie(AUTH_COOKIE_NAME);
-    reply.setCookie(AUTH_COOKIE_NAME, "").send({});
+
+    await prisma.authSession.delete({
+      where: { data: request.cookies[AUTH_COOKIE_NAME] },
+    });
   });
 
   server.get<{ Reply: UserResponse | undefined }>(
