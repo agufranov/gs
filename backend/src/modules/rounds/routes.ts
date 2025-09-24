@@ -1,9 +1,8 @@
+import { adminsOnlyHook } from "@/hooks/adminsOnly";
 import { addSeconds } from "date-fns";
 import { FastifyInstance } from "fastify";
 import { USER_SELECT_FIELDS } from "../auth/const";
 import { ErrorResponse, RoundResponse } from "./types";
-
-// TODO typing
 
 export default async function roundRoutes(server: FastifyInstance) {
   server.get<{ Reply: RoundResponse[] | ErrorResponse }>(
@@ -30,14 +29,7 @@ export default async function roundRoutes(server: FastifyInstance) {
           },
         });
 
-        // Transform dates to ISO strings
-        const transformedRounds = rounds.map((round) => ({
-          ...round,
-          startAt: round.startAt.toISOString(),
-          endAt: round.endAt.toISOString(),
-        }));
-
-        return transformedRounds;
+        return rounds;
       } catch (error) {
         console.error("Error fetching rounds:", error);
         reply.code(500);
@@ -73,14 +65,7 @@ export default async function roundRoutes(server: FastifyInstance) {
           return reply.code(404).send({ error: "User not found" });
         }
 
-        // Transform dates to ISO strings
-        const transformedRound = {
-          ...round,
-          startAt: round.startAt.toISOString(),
-          endAt: round.endAt.toISOString(),
-        };
-
-        return transformedRound;
+        return round;
       } catch (error) {
         console.error("Error fetching round:", error);
         reply.code(500);
@@ -90,47 +75,46 @@ export default async function roundRoutes(server: FastifyInstance) {
   );
 
   // POST /rounds - Create new round
-  server.post("/", async (request, reply) => {
-    const { prisma } = server;
+  server.post(
+    "/",
+    {
+      [adminsOnlyHook.stage]: adminsOnlyHook.handler,
+    },
+    async (request, reply) => {
+      const { prisma } = server;
 
-    try {
-      const cooldownSeconds = Number.parseInt(
-        process.env.COOLDOWN_DURATION ?? "0",
-        10
-      );
-      const roundSeconds = Number.parseInt(
-        process.env.ROUND_DURATION ?? "0",
-        10
-      );
+      try {
+        const cooldownSeconds = Number.parseInt(
+          process.env.COOLDOWN_DURATION ?? "0",
+          10
+        );
+        const roundSeconds = Number.parseInt(
+          process.env.ROUND_DURATION ?? "0",
+          10
+        );
 
-      const startAt = addSeconds(
-        new Date(),
-        Number.isFinite(cooldownSeconds) ? cooldownSeconds : 0
-      );
-      const endAt = addSeconds(
-        startAt,
-        Number.isFinite(roundSeconds) ? roundSeconds : 0
-      );
-
-      const round = await prisma.round.create({
-        data: {
+        const startAt = addSeconds(
+          new Date(),
+          Number.isFinite(cooldownSeconds) ? cooldownSeconds : 0
+        );
+        const endAt = addSeconds(
           startAt,
-          endAt,
-        },
-      });
+          Number.isFinite(roundSeconds) ? roundSeconds : 0
+        );
 
-      // Transform dates to ISO strings
-      const transformedRound = {
-        ...round,
-        // startAt: round.startAt.toISOString(),
-        // endAt: round.endAt.toISOString(),
-      };
+        const round = await prisma.round.create({
+          data: {
+            startAt,
+            endAt,
+          },
+        });
 
-      return reply.code(200).send(transformedRound);
-    } catch (error) {
-      console.error("Error creating round:", error);
-      reply.code(500);
-      throw error;
+        return reply.code(200).send(round);
+      } catch (error) {
+        console.error("Error creating round:", error);
+        reply.code(500);
+        throw error;
+      }
     }
-  });
+  );
 }
