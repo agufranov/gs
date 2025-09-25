@@ -1,5 +1,9 @@
 import { useProfile, useSignOut } from '@/modules/auth/queries'
-import { useCreateRound, useRounds } from '@/modules/rounds/queries'
+import {
+  useCreateRound,
+  useJoinRound,
+  useRounds,
+} from '@/modules/rounds/queries'
 import { createFileRoute, Navigate } from '@tanstack/react-router'
 import { formatDuration, interval, intervalToDuration } from 'date-fns'
 import { useEffect, useState } from 'react'
@@ -11,10 +15,13 @@ export const Route = createFileRoute('/rounds')({
 function RoundsRoute() {
   const signOut = useSignOut()
   const profile = useProfile()
-  const createRound = useCreateRound()
   const rounds = useRounds()
+  const createRound = useCreateRound()
+  const joinRound = useJoinRound()
 
   const handleCreateRound = () => createRound.mutateAsync(null)
+
+  const handleJoinRound = (id: number) => joinRound.mutateAsync({ id })
 
   const [now, setNow] = useState(new Date())
   useEffect(() => {
@@ -23,16 +30,17 @@ function RoundsRoute() {
 
   return (
     <div>
+      <pre>{JSON.stringify(joinRound.error)}</pre>
       {!profile.data && <Navigate to="/" />}
       <button onClick={() => signOut.mutateAsync()}>
         {profile.data?.username} [Sign out]
       </button>
-      {profile.data?.role === 'ADMIN' || true && (
+      {profile.data?.role === 'ADMIN' && (
         <button onClick={handleCreateRound}>CreateRound</button>
       )}
       {rounds.data?.map((round) => (
         <div>
-          <button>
+          <button onClick={() => handleJoinRound(round.id)}>
             {formatDuration(intervalToDuration(interval(now, round.startAt)))}
           </button>
         </div>

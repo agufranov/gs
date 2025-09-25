@@ -29,7 +29,11 @@ export default async function roundRoutes(server: FastifyInstance) {
           },
         });
 
-        return rounds;
+        return rounds.map((round) => ({
+          ...round,
+          startAt: round.startAt.toISOString(),
+          endAt: round.endAt.toISOString(),
+        }));
       } catch (error) {
         console.error("Error fetching rounds:", error);
         reply.code(500);
@@ -65,7 +69,11 @@ export default async function roundRoutes(server: FastifyInstance) {
           return reply.code(404).send({ error: "User not found" });
         }
 
-        return round;
+        return {
+          ...round,
+          startAt: round.startAt.toISOString(),
+          endAt: round.endAt.toISOString(),
+        };
       } catch (error) {
         console.error("Error fetching round:", error);
         reply.code(500);
@@ -109,12 +117,74 @@ export default async function roundRoutes(server: FastifyInstance) {
           },
         });
 
-        return reply.code(200).send(round);
+        return reply.code(200).send({
+          ...round,
+          startAt: round.startAt.toISOString(),
+          endAt: round.endAt.toISOString(),
+        });
       } catch (error) {
         console.error("Error creating round:", error);
         reply.code(500);
         throw error;
       }
+    }
+  );
+
+  server.post<{ Params: { id: number } }>(
+    "/:id/join",
+    async (request, reply) => {
+      const { prisma } = server;
+
+      if (!request.user?.id) {
+        reply.code(401).send({ error: "Unauthorized" });
+        return;
+      }
+
+      const roundId = Number(request.params.id);
+      const userId = Number(request.user!.id);
+      await prisma.$transaction(async (tx) => {
+        const inserted = await tx.$executeRaw`
+INSERT INTO "RoundPlayers" ("roundId", "userId")
+SELECT ${roundId}, ${userId}
+WHERE EXISTS (
+  SELECT 1 FROM "Rounds" r
+  WHERE r.id = ${roundId} AND r."startAt" > NOW() AT TIME ZONE 'UTC'
+)
+ON CONFLICT ("roundId", "userId") DO NOTHING`;
+
+        if (Number(inserted) === 1) {
+          reply.code(204).send();
+          return;
+        }
+
+        const existing = await tx.roundPlayer.findUnique({
+          where: { roundId_userId: { roundId, userId } },
+          select: { roundId: true },
+        });
+
+        if (existing) {
+          reply.code(400).send({
+            error: "Cannot join: you have already joined this round",
+          });
+          return;
+        }
+
+        const round = await tx.round.findUnique({
+          where: { id: roundId },
+          select: { id: true, startAt: true },
+        });
+
+        if (!round) {
+          reply.code(404).send({ error: "Round not found" });
+          return;
+        }
+
+        reply
+          .code(400)
+          .send({ error: "Cannot join: round has already started" });
+      });
+
+      reply.code(204).send();
     }
   );
 }
