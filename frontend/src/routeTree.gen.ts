@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignInRouteImport } from './routes/signIn'
 import { Route as RoundsRouteImport } from './routes/rounds'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RoundIdRouteImport } from './routes/round.$id'
 
 const SignInRoute = SignInRouteImport.update({
   id: '/signIn',
@@ -28,35 +29,44 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RoundIdRoute = RoundIdRouteImport.update({
+  id: '/round/$id',
+  path: '/round/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/rounds': typeof RoundsRoute
   '/signIn': typeof SignInRoute
+  '/round/$id': typeof RoundIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/rounds': typeof RoundsRoute
   '/signIn': typeof SignInRoute
+  '/round/$id': typeof RoundIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/rounds': typeof RoundsRoute
   '/signIn': typeof SignInRoute
+  '/round/$id': typeof RoundIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/rounds' | '/signIn'
+  fullPaths: '/' | '/rounds' | '/signIn' | '/round/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/rounds' | '/signIn'
-  id: '__root__' | '/' | '/rounds' | '/signIn'
+  to: '/' | '/rounds' | '/signIn' | '/round/$id'
+  id: '__root__' | '/' | '/rounds' | '/signIn' | '/round/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RoundsRoute: typeof RoundsRoute
   SignInRoute: typeof SignInRoute
+  RoundIdRoute: typeof RoundIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -82,6 +92,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/round/$id': {
+      id: '/round/$id'
+      path: '/round/$id'
+      fullPath: '/round/$id'
+      preLoaderRoute: typeof RoundIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -89,6 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RoundsRoute: RoundsRoute,
   SignInRoute: SignInRoute,
+  RoundIdRoute: RoundIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -27,3 +27,11 @@ export const useJoinRound = () => {
     mutationFn: ({ id }) => client.post(`/rounds/${id}/join`),
   })
 }
+
+export const useRound = (id: number) => {
+  return useQuery<RoundResponse>({
+    queryKey: ['round', id],
+    queryFn: () => client.get(`/rounds/${id}`),
+    enabled: Number.isFinite(id),
+  })
+}

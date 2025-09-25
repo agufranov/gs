@@ -43,10 +43,10 @@ export default async function roundRoutes(server: FastifyInstance) {
   );
 
   server.get<{ Params: { id: number }; Reply: RoundResponse | ErrorResponse }>(
-    ":id",
+    "/:id",
     async (request, reply) => {
       const { prisma } = server;
-      const { id } = request.params;
+      const id = Number(request.params.id);
 
       try {
         const round = await prisma.round.findUnique({
@@ -66,7 +66,7 @@ export default async function roundRoutes(server: FastifyInstance) {
         });
 
         if (!round) {
-          return reply.code(404).send({ error: "User not found" });
+          return reply.code(404).send({ error: "Round not found" });
         }
 
         return {
