@@ -9,6 +9,14 @@ export const useRounds = () => {
   })
 }
 
+export const useRound = (id: number) => {
+  return useQuery<RoundResponse>({
+    queryKey: ['round', id],
+    queryFn: () => client.get(`/rounds/${id}`),
+    enabled: Number.isFinite(id),
+  })
+}
+
 export const useCreateRound = () => {
   const queryClient = useQueryClient()
 
@@ -28,10 +36,12 @@ export const useJoinRound = () => {
   })
 }
 
-export const useRound = (id: number) => {
-  return useQuery<RoundResponse>({
-    queryKey: ['round', id],
-    queryFn: () => client.get(`/rounds/${id}`),
-    enabled: Number.isFinite(id),
+export const useTap = (id: RoundResponse['id']) => {
+  const queryClient = useQueryClient()
+
+  return useMutation<never, never, null>({
+    mutationKey: ['tap'],
+    mutationFn: () => client.post(`/rounds/${id}/tap`),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['round', id] }),
   })
 }

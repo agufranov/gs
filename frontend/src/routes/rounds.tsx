@@ -23,7 +23,14 @@ function RoundsRoute() {
   const handleCreateRound = () => createRound.mutateAsync(null)
 
   const handleJoinRound = async (id: number) => {
-    await joinRound.mutateAsync({ id })
+    const isParticipating = rounds.data
+      ?.find((r) => r.id === id)
+      ?.players.find((p) => p.userId === profile.data?.id)
+
+    if (!isParticipating) {
+      await joinRound.mutateAsync({ id })
+    }
+
     navigate({ to: '/round/$id', params: { id: String(id) } })
   }
 

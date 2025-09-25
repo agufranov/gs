@@ -1,5 +1,6 @@
 import { useTimer } from '@/hooks/useTimer'
-import { useRound } from '@/modules/rounds/queries'
+import { useProfile } from '@/modules/auth/queries'
+import { useRound, useTap } from '@/modules/rounds/queries'
 import { createFileRoute } from '@tanstack/react-router'
 import {
   differenceInMilliseconds,
@@ -24,6 +25,8 @@ function RoundRoute() {
   const { id } = Route.useParams()
   const roundId = Number(id)
   const round = useRound(roundId)
+  const tap = useTap(Number(id))
+  const profile = useProfile()
   const now = useTimer()
   const [roundStatus, setRoundStatus] = useState<
     'pending' | 'cooldown' | 'started' | 'ended'
@@ -41,6 +44,12 @@ function RoundRoute() {
     () => (round.data ? formatDifference(round.data.endAt, now) : ''),
     [round.data, now],
   )
+
+  const roundPlayer = useMemo(() => {
+    if (!round.data) return
+
+    return round.data.players.find((p) => p.userId === profile.data?.id)
+  }, [round.data])
 
   useEffect(() => {
     if (!round.data) return
@@ -87,15 +96,20 @@ function RoundRoute() {
   if (round.error)
     return <div>{(round.error as any)?.message ?? 'Failed to load round'}</div>
 
-  return (
+  return round.data ? (
     <div>
       <pre>{JSON.stringify(round.data, null, 2)}</pre>
       <div>{roundStatus}</div>
+      <div>
+        <button onClick={() => tap.mutateAsync(null)}>Tap</button>
+      </div>
+      <div>Taps: {roundPlayer?.taps}</div>
+      <div>Score: {roundPlayer?.score}</div>
       <div>
         {roundStatus === 'cooldown' && <div>Time to start: {timeToStart}</div>}
         {roundStatus === 'started' && <div>Time to end: {timeToEnd}</div>}
         {roundStatus === 'ended' && <div>Ended</div>}
       </div>
     </div>
-  )
+  ) : null
 }

@@ -185,4 +185,49 @@ ON CONFLICT ("roundId", "userId") DO NOTHING`;
       reply.code(204).send();
     }
   );
+
+  server.post<{ Params: { id: number } }>(
+    "/:id/tap",
+    async (request, reply) => {
+      const { prisma } = server;
+
+      if (!request.user?.id) {
+        reply.code(401).send({ error: "Unauthorized" });
+        return;
+      }
+
+      try {
+        const roundId = Number(request.params.id);
+        const userId = Number(request.user.id);
+
+        const rows: Array<{ taps: number; score: number }> =
+          await prisma.$queryRaw`
+INSERT INTO "RoundPlayers" ("roundId", "userId", "taps", "score")
+SELECT ${roundId}, ${userId}, 1, CASE WHEN (1 % 11) = 0 THEN 10 ELSE 1 END
+WHERE EXISTS (
+  SELECT 1 FROM "Rounds" r
+  WHERE r.id = ${roundId}
+    AND r."startAt" < NOW() AT TIME ZONE 'UTC'
+    AND r."endAt" > NOW() AT TIME ZONE 'UTC'
+)
+ON CONFLICT ("roundId", "userId") DO UPDATE SET
+  "taps" = "RoundPlayers"."taps" + 1,
+  "score" = "RoundPlayers"."score" + CASE WHEN (("RoundPlayers"."taps" + 1) % 11) = 0 THEN 10 ELSE 1 END
+RETURNING "taps", "score";
+        `;
+
+        if (!rows || rows.length === 0) {
+          reply
+            .code(400)
+            .send({ error: "Cannot tap: round not active or not found" });
+          return;
+        }
+
+        reply.code(204).send();
+      } catch (error) {
+        console.error("Error tapping:", error);
+        reply.code(500).send({ error: "Internal server error" });
+      }
+    }
+  );
 }
