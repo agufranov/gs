@@ -202,24 +202,23 @@ ON CONFLICT ("roundId", "userId") DO NOTHING`;
 
         const rows: Array<{ taps: number; score: number }> =
           await prisma.$queryRaw`
-INSERT INTO "RoundPlayers" ("roundId", "userId", "taps", "score")
-SELECT ${roundId}, ${userId}, 1, CASE WHEN (1 % 11) = 0 THEN 10 ELSE 1 END
-WHERE EXISTS (
-  SELECT 1 FROM "Rounds" r
-  WHERE r.id = ${roundId}
-    AND r."startAt" < NOW() AT TIME ZONE 'UTC'
-    AND r."endAt" > NOW() AT TIME ZONE 'UTC'
-)
-ON CONFLICT ("roundId", "userId") DO UPDATE SET
-  "taps" = "RoundPlayers"."taps" + 1,
-  "score" = "RoundPlayers"."score" + CASE WHEN (("RoundPlayers"."taps" + 1) % 11) = 0 THEN 10 ELSE 1 END
-RETURNING "taps", "score";
+UPDATE "RoundPlayers" rp
+SET
+  "taps" = rp."taps" + 1,
+  "score" = rp."score" + CASE WHEN ((rp."taps" + 1) % 11) = 0 THEN 10 ELSE 1 END
+FROM "Rounds" r
+WHERE r.id = rp."roundId"
+  AND rp."roundId" = ${roundId}
+  AND rp."userId" = ${userId}
+  AND r."startAt" < NOW() AT TIME ZONE 'UTC'
+  AND r."endAt" > NOW() AT TIME ZONE 'UTC'
+RETURNING rp."taps", rp."score";
         `;
 
         if (!rows || rows.length === 0) {
-          reply
-            .code(400)
-            .send({ error: "Cannot tap: round not active or not found" });
+          reply.code(400).send({
+            error: "Cannot tap: round not active or player not joined",
+          });
           return;
         }
 
