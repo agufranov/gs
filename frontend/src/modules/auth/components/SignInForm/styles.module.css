@@ -1,0 +1,23 @@
+.root {
+  width: 100%;
+  max-width: 320px;
+}
+
+.header {
+  padding-top: 12px;
+  padding-bottom: 8px;
+  text-align: center;
+  text-transform: uppercase;
+  background-color: var(--backgroundSecondary);
+}
+
+.button {
+  width: 100%;
+}
+
+.error {
+  margin-top: 8px;
+  height: 21px;
+  font-size: 0.875rem;
+  color: var(--danger);
+}

@@ -5,6 +5,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
 import type { QueryClient } from '@tanstack/react-query'
+import styles from './__root.module.css'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -13,7 +14,9 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => (
     <>
-      <Outlet />
+      <main className={styles.root}>
+        <Outlet />
+      </main>
       <TanstackDevtools
         config={{
           position: 'bottom-left',
