@@ -4,4 +4,11 @@ export const client = axios.create({
   baseURL: '/api',
 })
 
-client.interceptors.response.use((res: AxiosResponse) => res.data)
+client.interceptors.response.use(
+  (res: AxiosResponse) => res.data,
+  (err) => {
+    const error = err?.response?.data?.error
+
+    return Promise.reject(error)
+  },
+)
