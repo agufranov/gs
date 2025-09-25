@@ -1,12 +1,12 @@
+import { useTimer } from '@/hooks/useTimer'
 import { useProfile, useSignOut } from '@/modules/auth/queries'
 import {
   useCreateRound,
   useJoinRound,
   useRounds,
 } from '@/modules/rounds/queries'
-import { createFileRoute, Navigate } from '@tanstack/react-router'
+import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router'
 import { formatDuration, interval, intervalToDuration } from 'date-fns'
-import { useEffect, useState } from 'react'
 
 export const Route = createFileRoute('/rounds')({
   component: RoundsRoute,
@@ -18,15 +18,16 @@ function RoundsRoute() {
   const rounds = useRounds()
   const createRound = useCreateRound()
   const joinRound = useJoinRound()
+  const navigate = useNavigate()
 
   const handleCreateRound = () => createRound.mutateAsync(null)
 
-  const handleJoinRound = (id: number) => joinRound.mutateAsync({ id })
+  const handleJoinRound = async (id: number) => {
+    await joinRound.mutateAsync({ id })
+    navigate({ to: '/round/$id', params: { id: String(id) } })
+  }
 
-  const [now, setNow] = useState(new Date())
-  useEffect(() => {
-    setInterval(() => setNow(new Date()), 1000)
-  }, [])
+  const now = useTimer()
 
   return (
     <div>

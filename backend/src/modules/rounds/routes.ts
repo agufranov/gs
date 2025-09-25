@@ -163,9 +163,7 @@ ON CONFLICT ("roundId", "userId") DO NOTHING`;
         });
 
         if (existing) {
-          reply.code(400).send({
-            error: "Cannot join: you have already joined this round",
-          });
+          reply.code(400).send({ error: "You have already joined this round" });
           return;
         }
 
