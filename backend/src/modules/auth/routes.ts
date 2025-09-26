@@ -22,18 +22,13 @@ export default function authRoutes(server: FastifyInstance) {
       const { username, password } = request.body;
       const authService = new AuthService(prisma);
 
-      const result = await authService.signIn({ username, password });
+      let user;
 
-      if (!result.success) {
-        return reply
-          .code(401)
-          .send({ error: result.error || "Authentication failed" });
+      try {
+        user = await authService.signIn({ username, password });
+      } catch (error: any) {
+        return reply.code(401).send({ error: error.message });
       }
-
-      // Get the user to create session
-      const user = await prisma.user.findFirst({
-        where: { username },
-      });
 
       if (!user) {
         return reply.code(500).send({ error: "User not found after creation" });

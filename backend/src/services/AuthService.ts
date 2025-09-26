@@ -1,52 +1,36 @@
 import { SPECIAL_ROLES } from "@/const/specialRoles";
-import { UserResponse } from "@/types";
+import { SignInRequest, UserResponse } from "@/types";
+import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { BaseService } from "./BaseService";
 
-export interface SignInData {
-  username: string;
-  password: string;
-}
-
-export interface SignInResult {
-  success: boolean;
-  error?: string;
-}
-
 export class AuthService extends BaseService {
-  async signIn({ username, password }: SignInData): Promise<SignInResult> {
-    try {
-      let user = await this.prisma.user.findFirst({
-        where: {
-          username,
-        },
-      });
+  async signIn({ username, password }: SignInRequest): Promise<User> {
+    let user = await this.prisma.user.findFirst({
+      where: {
+        username,
+      },
+    });
 
-      if (!user) {
-        user = await this.prisma.user.create({
-          data: {
-            username,
-            passwordHash: await bcrypt.hash(password, 5),
-            role: SPECIAL_ROLES[username],
-          },
-        });
-      }
-
-      if (!(await bcrypt.compare(password, user.passwordHash))) {
-        return { success: false, error: "Wrong password" };
-      }
-
-      const session = await this.prisma.authSession.create({
-        data: {
-          userId: user.id,
-        },
-      });
-
-      return { success: true };
-    } catch (err) {
-      console.error("AuthService.signIn error:", err);
-      return { success: false, error: "Internal server error" };
+    if (!user) {
+      user = await this.signUp({ username, password });
     }
+
+    if (!(await bcrypt.compare(password, user.passwordHash))) {
+      throw new Error("Invalid password");
+    }
+
+    return user;
+  }
+
+  async signUp({ username, password }: SignInRequest): Promise<User> {
+    return await this.prisma.user.create({
+      data: {
+        username,
+        passwordHash: await bcrypt.hash(password, 5),
+        role: SPECIAL_ROLES[username],
+      },
+    });
   }
 
   async signOut(sessionId: string): Promise<void> {
