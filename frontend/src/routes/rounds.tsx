@@ -1,19 +1,20 @@
+import { Panel } from '@/components/Panel'
 import { useTimer } from '@/hooks/useTimer'
-import { useProfile, useSignOut } from '@/modules/auth/queries'
+import { useProfile } from '@/modules/auth/queries'
+import { Round } from '@/modules/rounds/components/Round'
 import {
   useCreateRound,
   useJoinRound,
   useRounds,
 } from '@/modules/rounds/queries'
-import { createFileRoute, Navigate, useNavigate } from '@tanstack/react-router'
-import { formatDuration, interval, intervalToDuration } from 'date-fns'
+import { Button, Flex } from '@chakra-ui/react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/rounds')({
   component: RoundsRoute,
 })
 
 function RoundsRoute() {
-  const signOut = useSignOut()
   const profile = useProfile()
   const rounds = useRounds()
   const createRound = useCreateRound()
@@ -37,22 +38,25 @@ function RoundsRoute() {
   const now = useTimer()
 
   return (
-    <div>
-      <pre>{JSON.stringify(joinRound.error)}</pre>
-      {!profile.data && <Navigate to="/" />}
-      <button onClick={() => signOut.mutateAsync()}>
-        {profile.data?.username} [Sign out]
-      </button>
+    <Panel showProfile title="Список раундов">
       {profile.data?.role === 'ADMIN' && (
-        <button onClick={handleCreateRound}>CreateRound</button>
+        <Button
+          alignSelf="flex-start"
+          marginBottom={4}
+          loading={createRound.isPending}
+          onClick={() => createRound.mutateAsync(null)}
+        >
+          Создать раунд
+        </Button>
       )}
-      {rounds.data?.map((round) => (
-        <div>
-          <button onClick={() => handleJoinRound(round.id)}>
-            {formatDuration(intervalToDuration(interval(now, round.startAt)))}
-          </button>
-        </div>
-      ))}
-    </div>
+      {rounds.data && !rounds.data?.length && (
+        <div style={{ textAlign: 'center' }}>Нет раундов</div>
+      )}
+      <Flex flexDirection="column" gap={4}>
+        {rounds.data?.map((round) => (
+          <Round round={round} />
+        ))}
+      </Flex>
+    </Panel>
   )
 }

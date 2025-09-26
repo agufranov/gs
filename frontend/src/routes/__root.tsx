@@ -1,9 +1,14 @@
 import { TanstackDevtools } from '@tanstack/react-devtools'
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import {
+  Navigate,
+  Outlet,
+  createRootRouteWithContext,
+} from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
+import { useProfile } from '@/modules/auth/queries'
 import type { QueryClient } from '@tanstack/react-query'
 import styles from './__root.module.css'
 
@@ -12,23 +17,33 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  component: () => (
-    <>
-      <main className={styles.root}>
-        <Outlet />
-      </main>
-      <TanstackDevtools
-        config={{
-          position: 'bottom-left',
-        }}
-        plugins={[
-          {
-            name: 'Tanstack Router',
-            render: <TanStackRouterDevtoolsPanel />,
-          },
-          TanStackQueryDevtools,
-        ]}
-      />
-    </>
-  ),
+  component: () => {
+    const profile = useProfile()
+
+    return (
+      <>
+        {!profile.isLoading &&
+          (profile.data ? (
+            <Navigate to="/rounds" />
+          ) : (
+            <Navigate to="/signIn" />
+          ))}
+        <main className={styles.root}>
+          {profile.isLoading ? 'Loading...' : <Outlet />}
+        </main>
+        <TanstackDevtools
+          config={{
+            position: 'bottom-left',
+          }}
+          plugins={[
+            {
+              name: 'Tanstack Router',
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
+      </>
+    )
+  },
 })

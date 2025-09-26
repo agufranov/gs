@@ -1,4 +1,4 @@
 :root {
-  --backgroundSecondary: #eee;
-  --danger: #e33;
+  --backgroundSecondary: var(--chakra-colors-color-palette-muted);
+  --danger: var(--chakra-colors-fg-error);
 }
