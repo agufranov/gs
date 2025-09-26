@@ -56,7 +56,7 @@ export const Panel: React.FC<PanelProps> = ({
         )}
       </Card.Header>
       <hr />
-      <Card.Body>{children}</Card.Body>
+      <Card.Body overflow="hidden">{children}</Card.Body>
     </Card.Root>
   )
 }

@@ -1,0 +1,11 @@
+.root {
+  transition: all ease 0.3s;
+
+  &:hover {
+    background-color: var(--backgroundSecondary);
+  }
+}
+
+.separator {
+  margin: var(--chakra-spacing-2) 0;
+}

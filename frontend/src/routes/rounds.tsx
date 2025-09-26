@@ -7,7 +7,7 @@ import {
   useJoinRound,
   useRounds,
 } from '@/modules/rounds/queries'
-import { Button, Flex } from '@chakra-ui/react'
+import { Button, Flex, ScrollArea } from '@chakra-ui/react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/rounds')({
@@ -52,11 +52,35 @@ function RoundsRoute() {
       {rounds.data && !rounds.data?.length && (
         <div style={{ textAlign: 'center' }}>Нет раундов</div>
       )}
-      <Flex flexDirection="column" gap={4}>
-        {rounds.data?.map((round) => (
-          <Round round={round} />
-        ))}
-      </Flex>
+      <ScrollArea.Root>
+        <ScrollArea.Viewport
+          css={{
+            '--scroll-shadow-size': '4rem',
+            maskImage:
+              'linear-gradient(#000,#000,transparent 0,#000 var(--scroll-shadow-size),#000 calc(100% - var(--scroll-shadow-size)),transparent)',
+            '&[data-at-top]': {
+              maskImage:
+                'linear-gradient(180deg,#000 calc(100% - var(--scroll-shadow-size)),transparent)',
+            },
+            '&[data-at-bottom]': {
+              maskImage:
+                'linear-gradient(0deg,#000 calc(100% - var(--scroll-shadow-size)),transparent)',
+            },
+          }}
+        >
+          <ScrollArea.Content>
+            <Flex flexDirection="column" paddingRight={8} gap={4}>
+              {rounds.data?.map((round) => (
+                <Round round={round} />
+              ))}
+            </Flex>
+          </ScrollArea.Content>
+        </ScrollArea.Viewport>
+        <ScrollArea.Scrollbar>
+          <ScrollArea.Thumb />
+        </ScrollArea.Scrollbar>
+        <ScrollArea.Corner />
+      </ScrollArea.Root>
     </Panel>
   )
 }
