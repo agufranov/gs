@@ -2,14 +2,26 @@ import { useEffect, useState } from 'react'
 
 export const useTimer = (delay: number = 1000) => {
   const [now, setNow] = useState(new Date())
-  let timer: number | null = null
+  let timer: ReturnType<typeof setTimeout> | null
+  let rafTimer: number | null
 
   useEffect(() => {
-    timer = setInterval(() => setNow(new Date()), delay)
-    return () => {
-      timer !== null && clearInterval(timer)
+    const update = () => {
+      setNow(new Date())
+
+      timer = setTimeout(
+        () => (rafTimer = requestAnimationFrame(update)),
+        delay,
+      )
     }
-  })
+
+    update()
+
+    return () => {
+      timer !== null && clearTimeout(timer)
+      rafTimer !== null && cancelAnimationFrame(rafTimer)
+    }
+  }, [])
 
   return now
 }
