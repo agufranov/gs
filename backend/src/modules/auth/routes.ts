@@ -34,11 +34,7 @@ export default function authRoutes(server: FastifyInstance) {
         return reply.code(500).send({ error: "User not found after creation" });
       }
 
-      const session = await prisma.authSession.create({
-        data: {
-          userId: user.id,
-        },
-      });
+      const session = await authService.createSession(user.id);
 
       // TODO... prod mode
       reply.setCookie(AUTH_COOKIE_NAME, session.data, {

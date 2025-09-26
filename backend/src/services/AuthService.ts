@@ -1,6 +1,6 @@
 import { SPECIAL_ROLES } from "@/const/specialRoles";
 import { SignInRequest, UserResponse } from "@/types";
-import { User } from "@prisma/client";
+import { AuthSession, User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { BaseService } from "./BaseService";
 
@@ -50,6 +50,14 @@ export class AuthService extends BaseService {
     });
 
     return user;
+  }
+
+  async createSession(userId: number): Promise<AuthSession> {
+    return await this.prisma.authSession.create({
+      data: {
+        userId,
+      },
+    });
   }
 
   async getSessionUser(sessionId: string): Promise<UserResponse | null> {
