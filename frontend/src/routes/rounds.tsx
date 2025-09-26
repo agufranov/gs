@@ -20,8 +20,6 @@ function RoundsRoute() {
   const joinRound = useJoinRound()
   const navigate = useNavigate()
 
-  const handleCreateRound = () => createRound.mutateAsync(null)
-
   const handleJoinRound = async (id: number) => {
     if (joinRound.isPending) {
       console.log('Pending')

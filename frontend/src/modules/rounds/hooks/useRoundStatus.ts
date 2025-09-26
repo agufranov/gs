@@ -1,11 +1,10 @@
 import type { RoundResponse } from '@backend-types'
 import { differenceInMilliseconds, isBefore } from 'date-fns'
 import { useEffect, useRef, useState } from 'react'
+import type { RoundStatus } from '../types'
 
 export const useRoundStatus = (round: RoundResponse | undefined) => {
-  const [roundStatus, setRoundStatus] = useState<
-    'pending' | 'cooldown' | 'started' | 'ended'
-  >('pending')
+  const [roundStatus, setRoundStatus] = useState<RoundStatus | null>(null)
 
   let startTimer = useRef<number>(null)
   let endTimer = useRef<number>(null)
