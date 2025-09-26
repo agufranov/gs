@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
 
 export const useTimer = (delay: number = 1000) => {
   const [now, setNow] = useState(new Date())
   let timer: ReturnType<typeof setTimeout> | null
   let rafTimer: number | null
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const update = () => {
       setNow(new Date())
 
