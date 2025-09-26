@@ -1,4 +1,5 @@
 import { Panel } from '@/components/Panel'
+import { toaster } from '@/components/ui/toaster'
 import { useProfile } from '@/modules/auth/queries'
 import { Round } from '@/modules/rounds/components/Round'
 import {
@@ -8,6 +9,7 @@ import {
 } from '@/modules/rounds/queries'
 import { Button, Flex, ScrollArea } from '@chakra-ui/react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { useEffect } from 'react'
 
 export const Route = createFileRoute('/rounds')({
   component: RoundsRoute,
@@ -36,6 +38,15 @@ function RoundsRoute() {
 
     navigate({ to: '/round/$id', params: { id: String(id) } })
   }
+
+  useEffect(() => {
+    if (joinRound.error) {
+      toaster.create({
+        title: joinRound.error,
+        type: 'error',
+      })
+    }
+  }, [joinRound.error])
 
   return (
     <Panel showProfile title="Список раундов">

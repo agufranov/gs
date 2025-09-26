@@ -30,7 +30,7 @@ export const useCreateRound = () => {
 }
 
 export const useJoinRound = () => {
-  return useMutation<{}, never, { id: RoundResponse['id'] }>({
+  return useMutation<{}, string, { id: RoundResponse['id'] }>({
     mutationKey: ['createRound'],
     mutationFn: ({ id }) => client.post(`/rounds/${id}/join`),
   })

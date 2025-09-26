@@ -8,6 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 
+import { Toaster } from '@/components/ui/toaster'
 import { useProfile } from '@/modules/auth/queries'
 import type { QueryClient } from '@tanstack/react-query'
 import styles from './__root.module.css'
@@ -31,6 +32,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         <main className={styles.root}>
           {profile.isLoading ? 'Loading...' : <Outlet />}
         </main>
+        <Toaster />
         <TanstackDevtools
           config={{
             position: 'bottom-left',
