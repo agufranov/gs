@@ -9,7 +9,7 @@ import { SignInRequest, SignInRequestSchema, UserResponse } from "./types";
 export default function authRoutes(server: FastifyInstance) {
   server.post<{
     Body: SignInRequest;
-    Reply: { debugSessionId: string } | ErrorResponse;
+    Reply: ErrorResponse;
   }>(
     "/signIn",
     {
@@ -19,12 +19,10 @@ export default function authRoutes(server: FastifyInstance) {
       },
     },
     async (request, reply) => {
-      // console.log('schema', request.server.getSchema('/auth/signIn'))
       const { prisma } = server;
       const { username, password } = request.body;
 
       try {
-        // TODO inject abstract db
         let user = await prisma.user.findFirst({
           where: {
             username,
@@ -60,7 +58,7 @@ export default function authRoutes(server: FastifyInstance) {
           path: "/",
         });
 
-        return reply.code(200).send({ debugSessionId: session.data });
+        return reply.code(200).send();
       } catch (err) {
         console.error(err);
       }

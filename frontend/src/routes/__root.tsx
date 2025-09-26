@@ -30,7 +30,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
             <Navigate to="/signIn" />
           ))}
         <main className={styles.root}>
-          {profile.isLoading ? 'Loading...' : <Outlet />}
+          <Outlet />
         </main>
         <Toaster />
         <TanstackDevtools
