@@ -35,7 +35,10 @@ export const Panel: React.FC<PanelProps> = ({
             <Menu.Root>
               <Menu.Trigger asChild>
                 <Button variant="outline" size="sm">
-                  <RiAccountCircleLine /> {profile.data?.username}
+                  <RiAccountCircleLine />{' '}
+                  <span className={styles.username}>
+                    {profile.data?.username}
+                  </span>
                 </Button>
               </Menu.Trigger>
               <Portal>
