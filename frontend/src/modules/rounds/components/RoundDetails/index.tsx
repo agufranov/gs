@@ -2,6 +2,7 @@ import { Panel } from '@/components/Panel'
 import { useTimer } from '@/hooks/useTimer'
 import { useProfile } from '@/modules/auth/queries'
 import type { RoundResponse } from '@backend-types'
+import cn from 'classnames'
 import { differenceInSeconds, type DateArg } from 'date-fns'
 import type React from 'react'
 import { useMemo } from 'react'
@@ -48,10 +49,31 @@ export const RoundDetails: React.FC<RoundProps> = ({ round }) => {
   return (
     <Panel showProfile title="Раунд">
       <img
-        className={styles.goose}
+        className={cn(styles.goose, {
+          [styles.gooseActive]: roundStatus === 'started',
+        })}
         src={goose}
         onClick={() => tap.mutateAsync(null)}
       />
+      <div>
+        {roundStatus === 'cooldown' && (
+          <>
+            <div>Cooldown</div>
+            <div>До начала раунда: {timeToStart}</div>
+          </>
+        )}
+        {roundStatus === 'started' && (
+          <>
+            <div>Раунд активен!</div>
+            <div>До конца осталось: {timeToEnd}</div>
+          </>
+        )}
+        {roundStatus === 'ended' && (
+          <>
+            <div>Раунд завершён</div>
+          </>
+        )}
+      </div>
     </Panel>
   )
 }

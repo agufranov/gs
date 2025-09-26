@@ -1,13 +1,17 @@
 .goose {
-  filter: drop-shadow(0 0 0.25rem crimson);
-  cursor: pointer;
   transition: all 0.1s ease;
+  filter: grayscale(1);
 
-  &:hover {
-    filter: drop-shadow(0 0 0.5rem crimson);
-  }
+  &.gooseActive {
+    cursor: pointer;
+    filter: drop-shadow(0 0 0.25rem crimson);
 
-  &:active {
-    filter: drop-shadow(0 0 1rem crimson);
+    &:hover {
+      filter: drop-shadow(0 0 0.5rem crimson);
+    }
+
+    &:active {
+      filter: drop-shadow(0 0 1rem crimson);
+    }
   }
 }
