@@ -1,14 +1,10 @@
 import { useTimer } from '@/hooks/useTimer'
 import { useProfile } from '@/modules/auth/queries'
+import { useRoundStatus } from '@/modules/rounds/hooks/useRoundStatus'
 import { useRound, useTap } from '@/modules/rounds/queries'
 import { createFileRoute } from '@tanstack/react-router'
-import {
-  differenceInMilliseconds,
-  differenceInSeconds,
-  isBefore,
-  type DateArg,
-} from 'date-fns'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { differenceInSeconds, type DateArg } from 'date-fns'
+import { useMemo } from 'react'
 
 export const Route = createFileRoute('/round/$id')({
   component: RoundRoute,
@@ -28,12 +24,7 @@ function RoundRoute() {
   const tap = useTap(Number(id))
   const profile = useProfile()
   const now = useTimer()
-  const [roundStatus, setRoundStatus] = useState<
-    'pending' | 'cooldown' | 'started' | 'ended'
-  >('pending')
-
-  let startTimer = useRef<number>(null)
-  let endTimer = useRef<number>(null)
+  const roundStatus = useRoundStatus(round.data)
 
   const timeToStart = useMemo(
     () => (round.data ? formatDifference(round.data.startAt, now) : ''),
@@ -50,47 +41,6 @@ function RoundRoute() {
 
     return round.data.players.find((p) => p.userId === profile.data?.id)
   }, [round.data])
-
-  useEffect(() => {
-    if (!round.data) return
-
-    setRoundStatus(
-      isBefore(now, round.data.startAt)
-        ? 'cooldown'
-        : isBefore(now, round.data.endAt)
-          ? 'started'
-          : 'ended',
-    )
-  }, [round.data])
-
-  useEffect(() => {
-    if (!round.data) return
-
-    if (roundStatus === 'cooldown') {
-      const msToStart = differenceInMilliseconds(round.data.startAt, new Date())
-
-      if (msToStart > 0) {
-        startTimer.current = setTimeout(
-          () => setRoundStatus('started'),
-          msToStart,
-        )
-      }
-
-      return () => {
-        startTimer.current !== null && clearTimeout(startTimer.current)
-      }
-    } else if (roundStatus === 'started') {
-      const msToEnd = differenceInMilliseconds(round.data.endAt, new Date())
-
-      if (msToEnd > 0) {
-        endTimer.current = setTimeout(() => setRoundStatus('ended'), msToEnd)
-      }
-
-      return () => {
-        endTimer.current !== null && clearTimeout(endTimer.current)
-      }
-    }
-  }, [roundStatus])
 
   if (round.isLoading) return <div>Loading...</div>
   if (round.error)

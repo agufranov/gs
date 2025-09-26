@@ -1,5 +1,4 @@
 import { Panel } from '@/components/Panel'
-import { useTimer } from '@/hooks/useTimer'
 import { useProfile } from '@/modules/auth/queries'
 import { Round } from '@/modules/rounds/components/Round'
 import {
@@ -24,6 +23,11 @@ function RoundsRoute() {
   const handleCreateRound = () => createRound.mutateAsync(null)
 
   const handleJoinRound = async (id: number) => {
+    if (joinRound.isPending) {
+      console.log('Pending')
+      return
+    }
+
     const isParticipating = rounds.data
       ?.find((r) => r.id === id)
       ?.players.find((p) => p.userId === profile.data?.id)
@@ -34,8 +38,6 @@ function RoundsRoute() {
 
     navigate({ to: '/round/$id', params: { id: String(id) } })
   }
-
-  const now = useTimer()
 
   return (
     <Panel showProfile title="Список раундов">
@@ -71,7 +73,10 @@ function RoundsRoute() {
           <ScrollArea.Content>
             <Flex flexDirection="column" paddingRight={8} gap={4}>
               {rounds.data?.map((round) => (
-                <Round round={round} />
+                <Round
+                  onClick={() => handleJoinRound(round.id)}
+                  round={round}
+                />
               ))}
             </Flex>
           </ScrollArea.Content>
