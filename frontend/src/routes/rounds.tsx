@@ -83,6 +83,7 @@ function RoundsRoute() {
             <Flex flexDirection="column" paddingRight={8} gap={4}>
               {rounds.data?.map((round) => (
                 <Round
+                  key={round.id}
                   onClick={() => handleJoinRound(round.id)}
                   round={round}
                 />

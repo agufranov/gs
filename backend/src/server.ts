@@ -8,6 +8,7 @@ import roundRoutes from "./modules/rounds/routes";
 import cookiePlugin from "./plugins/cookie";
 import prismaPlugin from "./plugins/prisma";
 import sensiblePlugin from "./plugins/sensible";
+import { Type, TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 
 const fastify = Fastify({
   logger: {
@@ -21,7 +22,7 @@ const fastify = Fastify({
       },
     },
   },
-});
+}).withTypeProvider<TypeBoxTypeProvider>();
 
 // Register plugins
 fastify.register(helmet, {

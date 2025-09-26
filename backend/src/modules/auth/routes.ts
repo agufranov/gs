@@ -4,7 +4,7 @@ import { AUTH_COOKIE_NAME } from "@/modules/auth/const";
 import bcrypt from "bcrypt";
 import { FastifyInstance } from "fastify";
 import { ErrorResponse } from "../rounds/types";
-import { SignInRequest, UserResponse } from "./types";
+import { SignInRequest, SignInRequestSchema, UserResponse } from "./types";
 
 export default function authRoutes(server: FastifyInstance) {
   server.post<{
@@ -14,6 +14,9 @@ export default function authRoutes(server: FastifyInstance) {
     "/signIn",
     {
       [formatUsernameHook.stage]: formatUsernameHook.handler,
+      schema: {
+        body: SignInRequestSchema,
+      },
     },
     async (request, reply) => {
       // console.log('schema', request.server.getSchema('/auth/signIn'))
