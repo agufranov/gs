@@ -1,7 +1,7 @@
 import { Panel } from '@/components/Panel'
 import { toaster } from '@/components/ui/toaster'
 import { useProfile } from '@/modules/auth/queries'
-import { Round } from '@/modules/rounds/components/Round'
+import { Round } from '@/modules/rounds/components/RoundListItem'
 import {
   useCreateRound,
   useJoinRound,
