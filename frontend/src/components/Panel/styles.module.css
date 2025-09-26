@@ -15,6 +15,13 @@
   transform: translateY(-50%);
 }
 
+.backButton {
+  position: absolute;
+  left: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
 .username {
   max-width: 100px;
   overflow: hidden;

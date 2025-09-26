@@ -47,7 +47,11 @@ export const RoundDetails: React.FC<RoundProps> = ({ round }) => {
   }, [round])
 
   return (
-    <Panel showProfile title="Раунд">
+    <Panel
+      backButton={{ title: 'Назад', route: '/rounds' }}
+      showProfile
+      title="Раунд"
+    >
       <img
         className={cn(styles.goose, {
           [styles.gooseActive]: roundStatus === 'started',
