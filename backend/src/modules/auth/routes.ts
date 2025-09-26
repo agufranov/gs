@@ -1,7 +1,6 @@
-import { SPECIAL_ROLES } from "@/const/specialRoles";
 import { formatUsernameHook } from "@/hooks/formatUsername";
 import { AUTH_COOKIE_NAME } from "@/modules/auth/const";
-import bcrypt from "bcrypt";
+import { AuthService } from "@/services";
 import { FastifyInstance } from "fastify";
 import { ErrorResponse } from "../rounds/types";
 import { SignInRequest, SignInRequestSchema, UserResponse } from "./types";
@@ -21,58 +20,53 @@ export default function authRoutes(server: FastifyInstance) {
     async (request, reply) => {
       const { prisma } = server;
       const { username, password } = request.body;
+      const authService = new AuthService(prisma);
 
-      try {
-        let user = await prisma.user.findFirst({
-          where: {
-            username,
-          },
-        });
+      const result = await authService.signIn({ username, password });
 
-        if (!user) {
-          user = await prisma.user.create({
-            data: {
-              username,
-              passwordHash: await bcrypt.hash(password, 5),
-              role: SPECIAL_ROLES[username],
-            },
-          });
-        }
-
-        if (!(await bcrypt.compare(password, user.passwordHash))) {
-          // TODO fix type error
-          return reply.code(401).send({ error: "Wrong password" });
-        }
-
-        const session = await prisma.authSession.create({
-          data: {
-            userId: user.id,
-          },
-        });
-
-        // TODO... prod mode
-        reply.setCookie(AUTH_COOKIE_NAME, session.data, {
-          httpOnly: true,
-          secure: false,
-          sameSite: "lax",
-          path: "/",
-        });
-
-        return reply.code(200).send();
-      } catch (err) {
-        console.error(err);
+      if (!result.success) {
+        return reply
+          .code(401)
+          .send({ error: result.error || "Authentication failed" });
       }
+
+      // Get the user to create session
+      const user = await prisma.user.findFirst({
+        where: { username },
+      });
+
+      if (!user) {
+        return reply.code(500).send({ error: "User not found after creation" });
+      }
+
+      const session = await prisma.authSession.create({
+        data: {
+          userId: user.id,
+        },
+      });
+
+      // TODO... prod mode
+      reply.setCookie(AUTH_COOKIE_NAME, session.data, {
+        httpOnly: true,
+        secure: false,
+        sameSite: "lax",
+        path: "/",
+      });
+
+      return reply.code(200).send();
     }
   );
 
   server.post("/signOut", async (request, reply) => {
     const { prisma } = server;
+    const authService = new AuthService(prisma);
 
     reply.clearCookie(AUTH_COOKIE_NAME);
 
-    await prisma.authSession.delete({
-      where: { data: request.cookies[AUTH_COOKIE_NAME] },
-    });
+    const sessionId = request.cookies[AUTH_COOKIE_NAME];
+    if (sessionId) {
+      await authService.signOut(sessionId);
+    }
   });
 
   server.get<{ Reply: UserResponse | undefined }>(

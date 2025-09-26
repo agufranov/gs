@@ -1,7 +1,6 @@
 import { adminsOnlyHook } from "@/hooks/adminsOnly";
-import { addSeconds } from "date-fns";
+import { RoundService } from "@/services";
 import { FastifyInstance } from "fastify";
-import { USER_SELECT_FIELDS } from "../auth/const";
 import { ErrorResponse, RoundResponse } from "./types";
 
 export default async function roundRoutes(server: FastifyInstance) {
@@ -9,31 +8,11 @@ export default async function roundRoutes(server: FastifyInstance) {
     "/",
     async (request, reply) => {
       const { prisma } = server;
+      const roundService = new RoundService(prisma);
 
       try {
-        const rounds = await prisma.round.findMany({
-          include: {
-            players: {
-              include: {
-                user: {
-                  select: USER_SELECT_FIELDS,
-                },
-              },
-            },
-            winner: {
-              select: USER_SELECT_FIELDS,
-            },
-          },
-          orderBy: {
-            startAt: "desc",
-          },
-        });
-
-        return rounds.map((round) => ({
-          ...round,
-          startAt: round.startAt.toISOString(),
-          endAt: round.endAt.toISOString(),
-        }));
+        const rounds = await roundService.getAllRounds();
+        return rounds;
       } catch (error) {
         console.error("Error fetching rounds:", error);
         reply.code(500);
@@ -46,34 +25,17 @@ export default async function roundRoutes(server: FastifyInstance) {
     "/:id",
     async (request, reply) => {
       const { prisma } = server;
+      const roundService = new RoundService(prisma);
       const id = Number(request.params.id);
 
       try {
-        const round = await prisma.round.findUnique({
-          where: { id },
-          include: {
-            players: {
-              include: {
-                user: {
-                  select: USER_SELECT_FIELDS,
-                },
-              },
-            },
-            winner: {
-              select: USER_SELECT_FIELDS,
-            },
-          },
-        });
+        const round = await roundService.getRoundById(id);
 
         if (!round) {
           return reply.code(404).send({ error: "Round not found" });
         }
 
-        return {
-          ...round,
-          startAt: round.startAt.toISOString(),
-          endAt: round.endAt.toISOString(),
-        };
+        return round;
       } catch (error) {
         console.error("Error fetching round:", error);
         reply.code(500);
@@ -90,6 +52,7 @@ export default async function roundRoutes(server: FastifyInstance) {
     },
     async (request, reply) => {
       const { prisma } = server;
+      const roundService = new RoundService(prisma);
 
       try {
         const cooldownSeconds = Number.parseInt(
@@ -101,27 +64,12 @@ export default async function roundRoutes(server: FastifyInstance) {
           10
         );
 
-        const startAt = addSeconds(
-          new Date(),
-          Number.isFinite(cooldownSeconds) ? cooldownSeconds : 0
-        );
-        const endAt = addSeconds(
-          startAt,
-          Number.isFinite(roundSeconds) ? roundSeconds : 0
-        );
-
-        const round = await prisma.round.create({
-          data: {
-            startAt,
-            endAt,
-          },
+        const round = await roundService.createRound({
+          cooldownSeconds,
+          roundSeconds,
         });
 
-        return reply.code(200).send({
-          ...round,
-          startAt: round.startAt.toISOString(),
-          endAt: round.endAt.toISOString(),
-        });
+        return reply.code(200).send(round);
       } catch (error) {
         console.error("Error creating round:", error);
         reply.code(500);
@@ -134,6 +82,7 @@ export default async function roundRoutes(server: FastifyInstance) {
     "/:id/join",
     async (request, reply) => {
       const { prisma } = server;
+      const roundService = new RoundService(prisma);
 
       if (!request.user?.id) {
         reply.code(401).send({ error: "Unauthorized" });
@@ -141,48 +90,21 @@ export default async function roundRoutes(server: FastifyInstance) {
       }
 
       const roundId = Number(request.params.id);
-      const userId = Number(request.user!.id);
-      await prisma.$transaction(async (tx) => {
-        const inserted = await tx.$executeRaw`
-INSERT INTO "RoundPlayers" ("roundId", "userId")
-SELECT ${roundId}, ${userId}
-WHERE EXISTS (
-  SELECT 1 FROM "Rounds" r
-  WHERE r.id = ${roundId} AND r."startAt" > NOW() AT TIME ZONE 'UTC'
-)
-ON CONFLICT ("roundId", "userId") DO NOTHING`;
+      const userId = Number(request.user.id);
 
-        if (Number(inserted) === 1) {
-          reply.code(204).send();
-          return;
+      try {
+        const result = await roundService.joinRound(roundId, userId);
+
+        if (!result.success) {
+          const statusCode = result.error === "Round not found" ? 404 : 400;
+          return reply.code(statusCode).send({ error: result.error });
         }
 
-        const existing = await tx.roundPlayer.findUnique({
-          where: { roundId_userId: { roundId, userId } },
-          select: { roundId: true },
-        });
-
-        if (existing) {
-          reply.code(400).send({ error: "You have already joined this round" });
-          return;
-        }
-
-        const round = await tx.round.findUnique({
-          where: { id: roundId },
-          select: { id: true, startAt: true },
-        });
-
-        if (!round) {
-          reply.code(404).send({ error: "Round not found" });
-          return;
-        }
-
-        reply
-          .code(400)
-          .send({ error: "Cannot join: round has already started" });
-      });
-
-      reply.code(204).send();
+        return reply.code(204).send();
+      } catch (error) {
+        console.error("Error joining round:", error);
+        reply.code(500).send({ error: "Internal server error" });
+      }
     }
   );
 
@@ -190,6 +112,7 @@ ON CONFLICT ("roundId", "userId") DO NOTHING`;
     "/:id/tap",
     async (request, reply) => {
       const { prisma } = server;
+      const roundService = new RoundService(prisma);
 
       if (!request.user?.id) {
         reply.code(401).send({ error: "Unauthorized" });
@@ -200,26 +123,10 @@ ON CONFLICT ("roundId", "userId") DO NOTHING`;
         const roundId = Number(request.params.id);
         const userId = Number(request.user.id);
 
-        const rows: Array<{ taps: number; score: number }> =
-          await prisma.$queryRaw`
-UPDATE "RoundPlayers" rp
-SET
-  "taps" = rp."taps" + 1,
-  "score" = rp."score" + CASE WHEN ((rp."taps" + 1) % 11) = 0 THEN 10 ELSE 1 END
-FROM "Rounds" r
-WHERE r.id = rp."roundId"
-  AND rp."roundId" = ${roundId}
-  AND rp."userId" = ${userId}
-  AND r."startAt" < NOW() AT TIME ZONE 'UTC'
-  AND r."endAt" > NOW() AT TIME ZONE 'UTC'
-RETURNING rp."taps", rp."score";
-        `;
+        const result = await roundService.tapRound(roundId, userId);
 
-        if (!rows || rows.length === 0) {
-          reply.code(400).send({
-            error: "Cannot tap: round not active or player not joined",
-          });
-          return;
+        if (!result.success) {
+          return reply.code(400).send({ error: result.error });
         }
 
         reply.code(204).send();

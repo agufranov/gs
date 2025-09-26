@@ -1,5 +1,6 @@
 import { SKIP_ROUTE_HOOKS } from "@/const/skipRouteHooks";
 import { Hook } from "@/hooks/types";
+import { AuthService } from "@/services";
 import { UserResponse } from "@/types";
 
 declare module "fastify" {
@@ -29,11 +30,8 @@ export const authHook: Hook<"onRequest"> = {
       throw { error: "UNAUTHORIZED" };
     }
     try {
-      const session = await request.server.prisma.authSession.findUnique({
-        where: { data: sessionId },
-        select: { user: { select: { id: true, username: true, role: true } } },
-      });
-      request.user = session?.user;
+      const authService = new AuthService(request.server.prisma);
+      request.user = (await authService.getSessionUser(sessionId)) || undefined;
     } catch (err) {
       throw err;
     }
