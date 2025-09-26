@@ -1,14 +1,14 @@
 import helmet from "@fastify/helmet";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
-import Fastify, { FastifyInstance } from "fastify";
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import Fastify from "fastify";
 import { authHook } from "./hooks/auth";
 import authRoutes from "./modules/auth/routes";
 import roundRoutes from "./modules/rounds/routes";
 import cookiePlugin from "./plugins/cookie";
 import prismaPlugin from "./plugins/prisma";
 import sensiblePlugin from "./plugins/sensible";
-import { Type, TypeBoxTypeProvider } from '@fastify/type-provider-typebox'
 
 const fastify = Fastify({
   logger: {
@@ -67,15 +67,15 @@ fastify.register(swaggerUi, {
   transformStaticCSP: (header: any) => header,
 });
 
-function testRoutes(server: FastifyInstance) {
-  server.get("/", (request, reply) => reply.send({ test: 42 }));
-  server.post("/", (request, reply) => reply.send({ test: 33 }));
-}
+fastify.setErrorHandler(async (error, request, reply) => {
+  if (error.code === "FST_ERR_VALIDATION") {
+    reply.code(400).send({ error: error.message });
+  }
+});
 
 // Register routes
 fastify.register(authRoutes, { prefix: "/auth" });
 fastify.register(roundRoutes, { prefix: "/rounds" });
-fastify.register(testRoutes, { prefix: "/test" });
 
 // Health check endpoint
 fastify.get("/health", async (request, reply) => {

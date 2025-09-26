@@ -3,7 +3,7 @@ import { User } from "@prisma/client";
 import { USER_SELECT_FIELDS } from "./const";
 
 export const SignInRequestSchema = Type.Object({
-  username: Type.String({ minLength: 1 }),
+  username: Type.String({ minLength: 1, }),
   password: Type.String({ minLength: 1 }),
 });
 

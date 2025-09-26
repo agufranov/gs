@@ -9,7 +9,7 @@
 
 .error {
   margin: 8px 0;
-  height: 21px;
+  min-height: 21px;
   font-size: 0.875rem;
   color: var(--danger);
 }
