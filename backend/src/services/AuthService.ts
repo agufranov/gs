@@ -1,6 +1,10 @@
-import { SPECIAL_ROLES } from "@/const/specialRoles";
-import { SignInRequest, UserResponse } from "@/types";
-import { AuthSession, User } from "@prisma/client";
+import {
+  AuthSession,
+  SPECIAL_ROLES,
+  SignInRequest,
+  User,
+  UserResponse,
+} from "@gs/shared";
 import bcrypt from "bcrypt";
 import { BaseService } from "./BaseService";
 

@@ -1,9 +1,13 @@
 import { formatUsernameHook } from "@/hooks/formatUsername";
-import { AUTH_COOKIE_NAME } from "@/modules/auth/const";
 import { AuthService } from "@/services";
+import {
+  AUTH_COOKIE_NAME,
+  ErrorResponse,
+  SignInRequest,
+  SignInRequestSchema,
+  UserResponse,
+} from "@gs/shared";
 import { FastifyInstance } from "fastify";
-import { ErrorResponse } from "../rounds/types";
-import { SignInRequest, SignInRequestSchema, UserResponse } from "./types";
 
 export default function authRoutes(server: FastifyInstance) {
   server.post<{

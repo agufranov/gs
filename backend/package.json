@@ -8,10 +8,10 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "clean": "rm -rf dist",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:studio": "prisma studio",
-    "prisma:deploy": "prisma migrate deploy"
+    "prisma:generate": "cd ../packages/shared && prisma generate",
+    "prisma:migrate": "cd ../packages/shared && prisma migrate dev",
+    "prisma:studio": "cd ../packages/shared && prisma studio",
+    "prisma:deploy": "cd ../packages/shared && prisma migrate deploy"
   },
   "keywords": [
     "fastify",
@@ -29,7 +29,7 @@
     "@fastify/swagger": "^9.5.1",
     "@fastify/swagger-ui": "^5.2.3",
     "@fastify/type-provider-typebox": "^6.0.0",
-    "@prisma/client": "^5.19.1",
+    "@gs/shared": "file:../packages/shared",
     "bcrypt": "^6.0.0",
     "date-fns": "^4.1.0",
     "fastify": "^5.6.1"

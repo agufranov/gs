@@ -1,7 +1,6 @@
-import { SKIP_ROUTE_HOOKS } from "@/const/skipRouteHooks";
 import { Hook } from "@/hooks/types";
 import { AuthService } from "@/services";
-import { UserResponse } from "@/types";
+import { SKIP_ROUTE_HOOKS, UserResponse } from "@gs/shared";
 
 declare module "fastify" {
   interface FastifyRequest {

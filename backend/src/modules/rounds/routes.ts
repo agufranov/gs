@@ -1,7 +1,7 @@
 import { adminsOnlyHook } from "@/hooks/adminsOnly";
 import { RoundService } from "@/services";
+import { ErrorResponse, RoundResponse } from "@gs/shared";
 import { FastifyInstance } from "fastify";
-import { ErrorResponse, RoundResponse } from "./types";
 
 export default async function roundRoutes(server: FastifyInstance) {
   server.get<{ Reply: RoundResponse[] | ErrorResponse }>(
