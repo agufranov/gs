@@ -17,7 +17,6 @@ export type RoundResponse = Omit<Round, "startAt" | "endAt"> & {
     players: (RoundPlayer & {
         user: UserResponse;
     })[];
-    winner: UserResponse | null;
 };
 export type ErrorResponse = {
     error: string;

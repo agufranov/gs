@@ -108,7 +108,7 @@ export default async function roundRoutes(server: FastifyInstance) {
     }
   );
 
-  server.post<{ Params: { id: number } }>(
+  server.post<{ Params: { id: number }; Reply: RoundResponse | ErrorResponse }>(
     "/:id/tap",
     async (request, reply) => {
       const { prisma } = server;
@@ -119,21 +119,20 @@ export default async function roundRoutes(server: FastifyInstance) {
         return;
       }
 
-      try {
-        const roundId = Number(request.params.id);
-        const userId = Number(request.user.id);
+      const roundId = Number(request.params.id);
+      const userId = Number(request.user.id);
 
-        const result = await roundService.tapRound(roundId, userId);
+      const tapResult = await roundService.tapRound(roundId, userId);
 
-        if (!result.success) {
-          return reply.code(400).send({ error: result.error });
-        }
+      const result = await roundService.getRoundById(roundId);
 
-        reply.code(204).send();
-      } catch (error) {
-        console.error("Error tapping:", error);
-        reply.code(500).send({ error: "Internal server error" });
+      if (!tapResult.success) {
+        return reply
+          .code(400)
+          .send({ error: tapResult.error ?? "Unknown error" });
       }
+
+      reply.code(204).send(result ?? undefined);
     }
   );
 }
