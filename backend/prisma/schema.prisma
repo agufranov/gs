@@ -37,12 +37,12 @@ model AuthSession {
 }
 
 model Round {
-    id       Int           @id @default(autoincrement())
-    startAt  DateTime
-    endAt    DateTime
-    players  RoundPlayer[]
-    winnerId Int?
-    winner   User?         @relation(fields: [winnerId], references: [id])
+    id      Int           @id @default(autoincrement())
+    startAt DateTime
+    endAt   DateTime
+    players RoundPlayer[]
+    User    User?         @relation(fields: [userId], references: [id])
+    userId  Int?
 
     @@map("Rounds")
 }

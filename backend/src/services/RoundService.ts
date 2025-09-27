@@ -29,9 +29,6 @@ export class RoundService extends BaseService {
             },
           },
         },
-        winner: {
-          select: USER_SELECT_FIELDS,
-        },
       },
       orderBy: {
         startAt: "desc",
@@ -55,9 +52,6 @@ export class RoundService extends BaseService {
               select: USER_SELECT_FIELDS,
             },
           },
-        },
-        winner: {
-          select: USER_SELECT_FIELDS,
         },
       },
     });
@@ -98,7 +92,6 @@ export class RoundService extends BaseService {
       startAt: round.startAt.toISOString(),
       endAt: round.endAt.toISOString(),
       players: [],
-      winner: null,
     };
   }
 
