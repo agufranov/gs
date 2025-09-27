@@ -48,6 +48,8 @@ function RoundsRoute() {
     }
   }, [joinRound.error])
 
+  if (profile.isLoading) return null
+
   return (
     <Panel showProfile title="Список раундов">
       {profile.data?.role === 'ADMIN' && (

@@ -3,6 +3,7 @@ import {
   Navigate,
   Outlet,
   createRootRouteWithContext,
+  useLocation,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 
@@ -20,12 +21,13 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: () => {
     const profile = useProfile()
+    const location = useLocation()
 
     return (
       <>
         {!profile.isLoading &&
           (profile.data ? (
-            <Navigate to="/rounds" />
+            location.pathname === '/signIn' && <Navigate to="/rounds" />
           ) : (
             <Navigate to="/signIn" />
           ))}

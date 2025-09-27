@@ -15,7 +15,7 @@ export const authHook: Hook<"onRequest"> = {
     const { url } = request;
 
     // TODO debug
-    // await new Promise((r) => setTimeout(r, 700));
+    await new Promise((r) => setTimeout(r, 700));
 
     if (url && /^\/swagger\/.*/.test(url)) {
       return;
