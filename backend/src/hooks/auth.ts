@@ -9,7 +9,6 @@ declare module "fastify" {
   }
 }
 
-// TODO we need to exclude swagger, so add this hook only for specific subset?
 export const authHook: Hook<"onRequest"> = {
   handler: async (request, reply) => {
     const { url } = request;

@@ -36,11 +36,9 @@ export default function authRoutes(server: FastifyInstance) {
 
       const session = await authService.createSession(user.id);
 
-      // TODO... prod mode
       reply.setCookie(AUTH_COOKIE_NAME, session.data, {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: true,
         path: "/",
       });
 
