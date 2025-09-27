@@ -10,5 +10,5 @@ function RoundRoute() {
   const { id } = Route.useParams()
   const round = useRound(Number(id))
 
-  return <RoundDetails round={round.data} />
+  return <RoundDetails round={round.data} refetch={round.refetch} />
 }

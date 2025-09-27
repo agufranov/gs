@@ -6,6 +6,6 @@ export type ErrorResponse = { error: string };
 export type RoundResponse = Omit<Round, "startAt" | "endAt"> & {
   startAt: string;
   endAt: string;
-  players: RoundPlayer[];
+  players: (RoundPlayer & { user: UserResponse })[];
   winner: UserResponse | null;
 };

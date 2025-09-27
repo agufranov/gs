@@ -5,7 +5,7 @@ import type { RoundResponse } from '@backend-types'
 import cn from 'classnames'
 import { differenceInSeconds, type DateArg } from 'date-fns'
 import type React from 'react'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRoundStatus } from '../../hooks/useRoundStatus'
 import { useTap } from '../../queries'
 import goose from './goose.png'
@@ -20,15 +20,17 @@ const formatDifference = (endDate: DateArg<Date>, startDate: DateArg<Date>) => {
 
 interface RoundProps {
   round: RoundResponse | undefined
+  refetch: () => Promise<any>
 }
 
-export const RoundDetails: React.FC<RoundProps> = ({ round }) => {
+export const RoundDetails: React.FC<RoundProps> = ({ round, refetch }) => {
   if (!round) return null
 
   const tap = useTap(round.id)
   const profile = useProfile()
   const now = useTimer()
   const roundStatus = useRoundStatus(round)
+  const [winner, setWinner] = useState<RoundResponse['players'][number]>()
 
   const timeToStart = useMemo(
     () => (round ? formatDifference(round.startAt, now) : ''),
@@ -40,11 +42,27 @@ export const RoundDetails: React.FC<RoundProps> = ({ round }) => {
     [round, now],
   )
 
-  const roundPlayer = useMemo(() => {
+  const currentPlayer = useMemo(() => {
     if (!round) return
 
     return round.players.find((p) => p.userId === profile.data?.id)
   }, [round])
+
+  useEffect(() => {
+    ;(async () => {
+      if (roundStatus === 'ended') {
+        await refetch()
+
+        // Calculate the winner
+        let winnerIndex = 0
+        let maxScore = 0
+        for (let i in round.players) {
+          if (round.players[i].score > maxScore) winnerIndex = Number(i)
+        }
+        setWinner(round.players[winnerIndex])
+      }
+    })()
+  }, [roundStatus])
 
   return (
     <Panel
@@ -59,6 +77,7 @@ export const RoundDetails: React.FC<RoundProps> = ({ round }) => {
         src={goose}
         onClick={() => tap.mutateAsync(null)}
       />
+      <hr className={styles.separator} />
       <div>
         {roundStatus === 'cooldown' && (
           <>
@@ -70,11 +89,17 @@ export const RoundDetails: React.FC<RoundProps> = ({ round }) => {
           <>
             <div>Раунд активен!</div>
             <div>До конца осталось: {timeToEnd}</div>
+            <div>Мои очки: {currentPlayer?.score}</div>
           </>
         )}
         {roundStatus === 'ended' && (
           <>
             <div>Раунд завершён</div>
+            <div>
+              Победитель:{' '}
+              {winner && `${winner?.user.username} (${winner?.score})`}
+            </div>
+            <div>Мои очки: {currentPlayer?.score}</div>
           </>
         )}
       </div>

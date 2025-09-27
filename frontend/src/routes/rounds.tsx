@@ -8,6 +8,7 @@ import {
   useRounds,
 } from '@/modules/rounds/queries'
 import { Button, Flex, ScrollArea } from '@chakra-ui/react'
+import { useQueryClient } from '@tanstack/react-query'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useEffect } from 'react'
 
@@ -21,12 +22,14 @@ function RoundsRoute() {
   const createRound = useCreateRound()
   const joinRound = useJoinRound()
   const navigate = useNavigate()
+  const queryClient = useQueryClient()
 
   const handleJoinRound = async (id: number) => {
     if (joinRound.isPending) {
       console.log('Pending')
       return
     }
+    queryClient.invalidateQueries({ queryKey: ['round', id] })
 
     const isParticipating = rounds.data
       ?.find((r) => r.id === id)

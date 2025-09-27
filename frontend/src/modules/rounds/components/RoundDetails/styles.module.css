@@ -15,3 +15,7 @@
     }
   }
 }
+
+.separator {
+  margin: var(--chakra-spacing-4) 0;
+}
