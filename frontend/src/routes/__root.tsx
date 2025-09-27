@@ -27,7 +27,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       <>
         {!profile.isLoading &&
           (profile.data ? (
-            location.pathname === '/signIn' && <Navigate to="/rounds" />
+            ['/signIn', '/'].includes(location.pathname) && (
+              <Navigate to="/rounds" />
+            )
           ) : (
             <Navigate to="/signIn" />
           ))}
