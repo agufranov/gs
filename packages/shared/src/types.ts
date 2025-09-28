@@ -1,5 +1,5 @@
-import { Type } from "@fastify/type-provider-typebox";
 import { Round, RoundPlayer, User } from "@prisma/client";
+import { Type } from "typebox";
 
 // Auth types
 export const SignInRequestSchema = Type.Object({

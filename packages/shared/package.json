@@ -4,7 +4,8 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "dependencies": {
-    "@prisma/client": "^5.0.0"
+    "@prisma/client": "^5.0.0",
+    "typebox": "^1.0.20"
   },
   "devDependencies": {
     "prisma": "^5.0.0",
