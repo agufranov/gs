@@ -6,256 +6,28 @@
   "fileMap": {
     "nonProjectFiles": [
       {
-        "file": ".git/objects/82/b6acb281662ed0bdede96572912a43acde0f0b",
-        "hash": "3977935469556540558"
-      },
-      {
-        "file": ".git/objects/6f/0751eb87801075d64552324a129e74020dc2fd",
-        "hash": "1005984406397163034"
-      },
-      {
-        "file": ".git/objects/f3/1b57b57139afaffa86d3ae3ea8f00b61b31a8d",
-        "hash": "13192367184792977371"
-      },
-      {
-        "file": ".git/objects/b8/19d79c3a93e0277cd22c90a03b048cf5b9e5ed",
-        "hash": "16204834941070654177"
-      },
-      {
-        "file": ".git/logs/refs/remotes/origin/nx",
-        "hash": "3079486613167849099"
-      },
-      {
-        "file": ".git/objects/0f/2edd780caba6d949d34ca0d5d5c3d59a8d5994",
-        "hash": "5096075461425108901"
-      },
-      {
-        "file": ".git/objects/ab/d53b82ab4576941d1bbc785fdd01cd3014c1fb",
-        "hash": "17094097307247385676"
-      },
-      {
-        "file": ".git/objects/db/9e50dc067d8813f466fae10dccbedd15466b39",
-        "hash": "8561003610288188492"
-      },
-      {
-        "file": ".git/objects/d7/73b3983b33f998d33454e5e069d94c1962c641",
-        "hash": "13340523805804602391"
-      },
-      {
-        "file": ".git/index.lock",
-        "hash": "3244421341483603138"
-      },
-      {
-        "file": ".git/objects/18/06815c40db62111d101caf30aecc5e57ab7c9a",
-        "hash": "16276484822424613264"
-      },
-      {
-        "file": ".nx/workspace-data/file-map.json",
-        "hash": "17431565391442266504"
-      },
-      {
-        "file": ".git/objects/64/d5c297b066ba099a524cd94b3a83baf8d81c48",
-        "hash": "5720700191264385375"
-      },
-      {
-        "file": ".nx/workspace-data/d/daemon.log",
-        "hash": "8124322793773153293"
-      },
-      {
-        "file": ".git/objects/e0/dea1557db164898cec204aa22f8a65f632f10f",
-        "hash": "2885323643848443611"
-      },
-      {
-        "file": ".git/objects/5b/0bd61ba857ad9de0aae6b09e71def40db4dfe1",
-        "hash": "14374597467612687096"
-      },
-      {
-        "file": ".nx/workspace-data/project-graph.json",
-        "hash": "9517679798123875929"
-      },
-      {
-        "file": "package.json",
-        "hash": "5464904338003713268"
-      },
-      {
-        "file": ".git/objects/b0/d97d8dbfcbcbcc10f0040f443c1a9bab4d05d9",
-        "hash": "6304620216174969844"
-      },
-      {
-        "file": ".git/objects/62/43493512bac144e503f1ece6052718b69f3a3b",
-        "hash": "4947451149511694485"
-      },
-      {
-        "file": ".nx/workspace-data/source-maps.json",
-        "hash": "7306013112431163762"
-      },
-      {
-        "file": "workspace.json",
-        "hash": "3455034356632540583"
-      },
-      {
-        "file": ".git/refs/remotes/origin/nx",
-        "hash": "4049985404125529225"
-      },
-      {
-        "file": ".git/logs/HEAD",
-        "hash": "14138406314693623784"
-      },
-      {
-        "file": ".git/objects/c0/f5e92140cf2fd2eb262ff475d73e568f8377c0",
-        "hash": "13264896514468932781"
-      },
-      {
-        "file": ".git/objects/6e/a783c0c3abb14eaa8d10299c2256539f27960c",
-        "hash": "11793118041168578325"
+        "file": ".gitignore",
+        "hash": "7881188660192335486"
       },
       {
         "file": "README.md",
         "hash": "17684121658418502308"
       },
       {
-        "file": ".git/objects/fd/8a914a979e8ea9b1cecc020f2ff5df99bfa157",
-        "hash": "14739758958499964277"
-      },
-      {
-        "file": ".git/objects/03/221eb7751712bb30b61573905eeaf34d228af1",
-        "hash": "16915241977019488409"
-      },
-      {
-        "file": ".git/COMMIT_EDITMSG",
-        "hash": "9995225748741518853"
-      },
-      {
-        "file": ".git/objects/1e/3c67499de848ae03b4ceef8baf19dfd1249bb9",
-        "hash": "6757434119509289313"
-      },
-      {
-        "file": ".git/objects/2d/7cfa296543649816c61d3ff6f2afcbf76eaf02",
-        "hash": "5303848716945611433"
-      },
-      {
-        "file": ".git/objects/86/144962a14c72f82044e8b28cc515a5d87464fe",
-        "hash": "6849354453032315500"
-      },
-      {
-        "file": ".git/objects/54/4155404e486104e835772d655f5c746b6b76ea",
-        "hash": "6760177632384162094"
-      },
-      {
-        "file": ".git/logs/refs/heads/nx",
-        "hash": "15250836177214458014"
-      },
-      {
-        "file": ".git/objects/25/89a1afdacf468e0cfb4d35ea14f2e0354f1c2f",
-        "hash": "17382789157168978174"
-      },
-      {
-        "file": ".git/objects/ed/af8fd62f2187a02564550377ba1c2e83d341b2",
-        "hash": "17885383151279670856"
-      },
-      {
-        "file": ".git/objects/51/7dc0e38142a616660392750be1af1527ae0ea4",
-        "hash": "5873614117993855175"
-      },
-      {
-        "file": ".git/objects/6f/47240a0cef98b83c67a14267dc1cc808afe668",
-        "hash": "6159347023735858935"
-      },
-      {
-        "file": ".git/config",
-        "hash": "5690984327601967606"
-      },
-      {
-        "file": ".git/objects/11/137a5a2e0e9dfd329908828ed33013e158a0a0",
-        "hash": "8716831497204904213"
-      },
-      {
-        "file": ".git/objects/64/199d53a8c6401283829a170d77be1ffab3398d",
-        "hash": "15612915545305086346"
-      },
-      {
-        "file": ".git/objects/c3/c0b0fae625ee53dd115ef09715005a3553fc98",
-        "hash": "14125420402858746029"
-      },
-      {
-        "file": ".git/objects/03/feb78e6014f5bae8db0963b671646aca346927",
-        "hash": "17469083377227784564"
-      },
-      {
-        "file": ".git/index",
-        "hash": "9227180793077736942"
-      },
-      {
-        "file": ".git/refs/heads/nx",
-        "hash": "4049985404125529225"
-      },
-      {
-        "file": ".git/objects/76/c0e85cbbeb2e36407739b5e49a50e1893a8c5e",
-        "hash": "12503863167764946304"
-      },
-      {
-        "file": ".git/objects/04/e9cd6ea26a7491ec3a4882de715f9a66ebfdc6",
-        "hash": "4629259352734192491"
-      },
-      {
-        "file": ".git/objects/3b/5a8f2ed0dd45b646435209cff7f81f9da73635",
-        "hash": "421996957593489487"
-      },
-      {
-        "file": ".git/objects/24/3bdb4f00a8ffc302c17bd39882fb756e803f20",
-        "hash": "13755961379700733454"
+        "file": "nx.json",
+        "hash": "989739641317776414"
       },
       {
         "file": "package-lock.json",
         "hash": "2139475859306417263"
       },
       {
-        "file": ".git/objects/a8/561962761246bae907f3330279e97dce1c0c30",
-        "hash": "9960736856009367013"
+        "file": "package.json",
+        "hash": "5464904338003713268"
       },
       {
-        "file": ".git/objects/f1/7a1f0bd7d749534353a1bdee28464ef3885731",
-        "hash": "12733843193445040861"
-      },
-      {
-        "file": ".git/objects/77/faf19b21a2ee9e88f2ee81fe213f1541c52a58",
-        "hash": "12051476541118844152"
-      },
-      {
-        "file": ".git/objects/c8/b182598649ebee511fd32b61c35e2a6dc89759",
-        "hash": "6593255749341092655"
-      },
-      {
-        "file": ".git/objects/b8/41f7fa29264e79210fa4c4fa5fe39940a0bd79",
-        "hash": "141789998216090671"
-      },
-      {
-        "file": ".git/objects/3b/a7205634c9bfe66b9e684d16c95a60c6bcd10b",
-        "hash": "15486397702634788032"
-      },
-      {
-        "file": ".git/objects/2b/18fc14b4596adb58ca7bca1180c5487b26d990",
-        "hash": "8764530063182255728"
-      },
-      {
-        "file": "nx.json",
-        "hash": "989739641317776414"
-      },
-      {
-        "file": ".git/objects/b8/cd83aa58cbd556fd11174bcbd27708842009f6",
-        "hash": "10326961564861055912"
-      },
-      {
-        "file": ".git/objects/dc/d47cefbde818207f593eba0f4770ee3139a1db",
-        "hash": "12026242052638222068"
-      },
-      {
-        "file": ".git/objects/bd/7d7847b2c42f17b6b3e024a4cf6b4f53c5df55",
-        "hash": "12936211476025183670"
-      },
-      {
-        "file": ".git/objects/fb/eaf96130c2b409c763246b7ff12f4688f3269d",
-        "hash": "6528050421467084190"
+        "file": "workspace.json",
+        "hash": "3455034356632540583"
       }
     ],
     "projectFileMap": {
@@ -512,91 +284,6 @@
           ]
         }
       ],
-      "shared": [
-        {
-          "file": "packages/shared/.env",
-          "hash": "2489003596054701283"
-        },
-        {
-          "file": "packages/shared/dist/constants.d.ts",
-          "hash": "2421976197336085772"
-        },
-        {
-          "file": "packages/shared/dist/constants.js",
-          "hash": "12056172098152919904"
-        },
-        {
-          "file": "packages/shared/dist/index.d.ts",
-          "hash": "16532614006078971560"
-        },
-        {
-          "file": "packages/shared/dist/index.js",
-          "hash": "4545243686124548625"
-        },
-        {
-          "file": "packages/shared/dist/types.d.ts",
-          "hash": "7128011783269058923"
-        },
-        {
-          "file": "packages/shared/dist/types.js",
-          "hash": "12598349318594766878"
-        },
-        {
-          "file": "packages/shared/example.env",
-          "hash": "2489003596054701283"
-        },
-        {
-          "file": "packages/shared/package-lock.json",
-          "hash": "15025565757087955017"
-        },
-        {
-          "file": "packages/shared/package.json",
-          "hash": "3454066500283994592",
-          "deps": [
-            "npm:typescript"
-          ]
-        },
-        {
-          "file": "packages/shared/prisma/migrations/20250923183609_add_users_and_auth_sessions/migration.sql",
-          "hash": "10909680673194238715"
-        },
-        {
-          "file": "packages/shared/prisma/migrations/20250923202401_add_rounds_and_round_players/migration.sql",
-          "hash": "8113222231962169954"
-        },
-        {
-          "file": "packages/shared/prisma/migrations/20250927163151_remove_winner_from_round_player/migration.sql",
-          "hash": "7782565274650694099"
-        },
-        {
-          "file": "packages/shared/prisma/migrations/migration_lock.toml",
-          "hash": "11493296588214560035"
-        },
-        {
-          "file": "packages/shared/prisma/schema.prisma",
-          "hash": "14345414600680633058"
-        },
-        {
-          "file": "packages/shared/project.json",
-          "hash": "10761512229141935516"
-        },
-        {
-          "file": "packages/shared/src/constants.ts",
-          "hash": "3974809460003217336"
-        },
-        {
-          "file": "packages/shared/src/index.ts",
-          "hash": "14897778407270424301"
-        },
-        {
-          "file": "packages/shared/src/types.ts",
-          "hash": "11996916062862096626"
-        },
-        {
-          "file": "packages/shared/tsconfig.json",
-          "hash": "4586021935703817428"
-        }
-      ],
       "backend": [
         {
           "file": "backend/.gitignore",
@@ -744,6 +431,71 @@
         {
           "file": "backend/tsconfig.json",
           "hash": "15132842309220205623"
+        }
+      ],
+      "shared": [
+        {
+          "file": "packages/shared/.env",
+          "hash": "4913377019100205349"
+        },
+        {
+          "file": "packages/shared/.gitignore",
+          "hash": "1113073219615888844"
+        },
+        {
+          "file": "packages/shared/example.env",
+          "hash": "2489003596054701283"
+        },
+        {
+          "file": "packages/shared/package-lock.json",
+          "hash": "15025565757087955017"
+        },
+        {
+          "file": "packages/shared/package.json",
+          "hash": "3454066500283994592",
+          "deps": [
+            "npm:typescript"
+          ]
+        },
+        {
+          "file": "packages/shared/prisma/migrations/20250923183609_add_users_and_auth_sessions/migration.sql",
+          "hash": "10909680673194238715"
+        },
+        {
+          "file": "packages/shared/prisma/migrations/20250923202401_add_rounds_and_round_players/migration.sql",
+          "hash": "8113222231962169954"
+        },
+        {
+          "file": "packages/shared/prisma/migrations/20250927163151_remove_winner_from_round_player/migration.sql",
+          "hash": "7782565274650694099"
+        },
+        {
+          "file": "packages/shared/prisma/migrations/migration_lock.toml",
+          "hash": "11493296588214560035"
+        },
+        {
+          "file": "packages/shared/prisma/schema.prisma",
+          "hash": "14345414600680633058"
+        },
+        {
+          "file": "packages/shared/project.json",
+          "hash": "10761512229141935516"
+        },
+        {
+          "file": "packages/shared/src/constants.ts",
+          "hash": "3974809460003217336"
+        },
+        {
+          "file": "packages/shared/src/index.ts",
+          "hash": "13047892891406750688"
+        },
+        {
+          "file": "packages/shared/src/types.ts",
+          "hash": "11996916062862096626"
+        },
+        {
+          "file": "packages/shared/tsconfig.json",
+          "hash": "4586021935703817428"
         }
       ]
     }
