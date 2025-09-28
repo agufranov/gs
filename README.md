@@ -35,7 +35,7 @@ npm install
 
 ```bash
 # Copy the example environment file
-cp backend/example.env backend/.env
+cp shared/example.env shared/.env
 
 # Edit backend/.env with your database URL
 DATABASE_URL="postgresql://username:password@localhost:5432/gs_db"
