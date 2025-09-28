@@ -1,6 +1,2 @@
-import { Role } from "@prisma/client";
-
-export const SPECIAL_ROLES: Record<string, Role> = {
-  admin: "ADMIN",
-  nikita: "NIKITA",
-};
+// Re-export shared constants for backward compatibility
+export * from "@gs/shared";

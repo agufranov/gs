@@ -1,0 +1,34 @@
+{
+  "name": "gs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "install": "nx run-many -t install",
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "nx run-many --target=build --all",
+    "test": "nx run-many --target=test --all",
+    "lint": "nx run-many --target=lint --all"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agufranov/gs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/agufranov/gs/issues"
+  },
+  "homepage": "https://github.com/agufranov/gs#readme",
+  "description": "",
+  "devDependencies": {
+    "@nx/js": "^21.5.3",
+    "@nx/node": "^21.5.3",
+    "@nx/react": "^21.5.3",
+    "@nx/vite": "^21.5.3",
+    "concurrently": "^8.2.2",
+    "nx": "^21.5.3"
+  }
+}

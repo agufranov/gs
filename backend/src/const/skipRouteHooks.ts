@@ -1,3 +1,2 @@
-export const SKIP_ROUTE_HOOKS = {
-  auth: ['/auth/signIn', '/auth/signUp'],
-}
+// Re-export shared constants for backward compatibility
+export * from "@gs/shared";

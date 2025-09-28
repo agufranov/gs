@@ -1,5 +1,4 @@
-import { USER_SELECT_FIELDS } from "@/modules/auth/const";
-import { RoundResponse } from "@/modules/rounds/types";
+import { RoundResponse, USER_SELECT_FIELDS } from "@gs/shared";
 import { addSeconds } from "date-fns";
 import { BaseService } from "./BaseService";
 

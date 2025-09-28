@@ -1,4 +1,2 @@
-export * from "./modules/auth/types";
-export * from "./modules/rounds/types";
-
-export type ErrorResponse = { error: string };
+// Re-export shared types for backward compatibility
+export * from "@gs/shared";

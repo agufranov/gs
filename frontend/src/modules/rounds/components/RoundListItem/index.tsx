@@ -1,9 +1,8 @@
-import type { RoundResponse } from '@backend-types'
 import { Card, List, type CardRootProps } from '@chakra-ui/react'
+import { ROUND_STATUS_NAMES, type RoundResponse } from '@gs/shared'
 import { format } from 'date-fns'
 import type React from 'react'
 import { useRoundStatus } from '../../hooks/useRoundStatus'
-import { ROUND_STATUS_NAMES } from '../../types'
 import styles from './styles.module.css'
 
 interface RoundProps extends CardRootProps {
