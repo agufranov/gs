@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "install": "npm install",
     "dev": "vite --port 5173",
     "start": "vite --port 5173",
     "build": "vite build && tsc",
