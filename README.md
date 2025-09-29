@@ -1,4 +1,4 @@
-# GS Project
+# The Last of Guss Project
 
 A full-stack application with shared types and Prisma schema managed by Nx.
 

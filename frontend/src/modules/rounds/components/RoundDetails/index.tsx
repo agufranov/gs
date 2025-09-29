@@ -1,7 +1,7 @@
 import { Panel } from '@/components/Panel'
 import { useTimer } from '@/hooks/useTimer'
 import { useProfile } from '@/modules/auth/queries'
-import type { RoundResponse } from '@backend-types'
+import { SPECIAL_ROLES, type RoundResponse } from '@gs/shared'
 import cn from 'classnames'
 import { differenceInSeconds, type DateArg } from 'date-fns'
 import type React from 'react'
@@ -33,20 +33,29 @@ export const RoundDetails: React.FC<RoundProps> = ({ round, refetch }) => {
   const [winner, setWinner] = useState<RoundResponse['players'][number]>()
 
   const timeToStart = useMemo(
-    () => (round ? formatDifference(round.startAt, now) : ''),
+    () => formatDifference(round.startAt, now),
     [round, now],
   )
 
   const timeToEnd = useMemo(
-    () => (round ? formatDifference(round.endAt, now) : ''),
+    () => formatDifference(round.endAt, now),
     [round, now],
   )
 
-  const currentPlayer = useMemo(() => {
-    if (!round) return
+  const activePlayers = useMemo(
+    () => round.players.filter((p) => p.user.role !== SPECIAL_ROLES.nikita),
+    [round],
+  )
 
-    return round.players.find((p) => p.userId === profile.data?.id)
-  }, [round])
+  const currentPlayer = useMemo(
+    () => round.players.find((p) => p.userId === profile.data?.id),
+    [round],
+  )
+
+  const totalScore = useMemo(
+    () => activePlayers.reduce((sum, player) => sum + player.score, 0),
+    [round],
+  )
 
   useEffect(() => {
     ;(async () => {
@@ -56,13 +65,13 @@ export const RoundDetails: React.FC<RoundProps> = ({ round, refetch }) => {
         // Calculate the winner
         let winnerIndex = 0
         let maxScore = 0
-        for (let i in round.players) {
-          if (round.players[i].score > maxScore) winnerIndex = Number(i)
+        for (let i in activePlayers) {
+          if (activePlayers[i].score > maxScore) winnerIndex = Number(i)
         }
-        setWinner(round.players[winnerIndex])
+        setWinner(activePlayers[winnerIndex])
       }
     })()
-  }, [roundStatus])
+  }, [roundStatus, activePlayers])
 
   return (
     <Panel
@@ -95,9 +104,10 @@ export const RoundDetails: React.FC<RoundProps> = ({ round, refetch }) => {
         {roundStatus === 'ended' && (
           <>
             <div>Раунд завершён</div>
+            <div>Всего очков: {totalScore}</div>
             <div>
               Победитель:{' '}
-              {winner && `${winner?.user.username} (${winner?.score})`}
+              {winner ? `${winner?.user.username} (${winner?.score})` : 'нет'}
             </div>
             <div>Мои очки: {currentPlayer?.score}</div>
           </>
