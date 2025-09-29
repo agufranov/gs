@@ -1,4 +1,4 @@
-import type { RoundResponse } from '@backend-types'
+import type { RoundResponse } from '@gs/shared'
 import { differenceInMilliseconds, isBefore } from 'date-fns'
 import { useEffect, useRef, useState } from 'react'
 import type { RoundStatus } from '../types'

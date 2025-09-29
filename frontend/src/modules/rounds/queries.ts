@@ -1,5 +1,5 @@
 import { client } from '@/client'
-import type { RoundResponse } from '@backend-types'
+import type { RoundResponse } from '@gs/shared'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useRounds = () => {

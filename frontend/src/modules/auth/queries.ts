@@ -1,5 +1,5 @@
 import { client } from '@/client'
-import type { SignInRequest, UserResponse } from '@backend-types'
+import type { SignInRequest, UserResponse } from '@gs/shared'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 export const useSignIn = () => {
